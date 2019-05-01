@@ -27,6 +27,10 @@ public class Sport {
         return noParticipants;
     }
 
+    public String getHotelName() {
+        return hotelName;
+    }
+
     public static class Builder {
         private String sportName;
         private String participant;

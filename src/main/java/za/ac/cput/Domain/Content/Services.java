@@ -15,10 +15,23 @@ public class Services {
         this.price = builder.price;
     }
 
+    public String getServName() {
+        return servName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
     public static class Builder {
         private String sName;
         private String description;
         private double price;
+
 
         public Builder sName(String sName) {
             this.sName = sName;

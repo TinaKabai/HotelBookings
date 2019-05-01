@@ -2,7 +2,7 @@ package za.ac.cput.Domain.Payment;
 
 public class Card implements Transaction {
 
-    private int cardNo;
+    private String cardNo;
     private int pin;
 
     public Card() {
@@ -13,7 +13,7 @@ public class Card implements Transaction {
         this.pin = builder.pin;
     }
 
-    public int getCardNo() {
+    public String getCardNo() {
         return cardNo;
     }
     public int getPin() {
@@ -30,10 +30,10 @@ public class Card implements Transaction {
     }
 
     public static class Builder{
-        private int cardNo;
+        private String cardNo;
         private int pin;
 
-        public Builder cardNumber(int cardNo){
+        public Builder cardNumber(String cardNo){
             this.cardNo = cardNo;
             return this;
         }

@@ -2,7 +2,7 @@ package za.ac.cput.Domain.Content;
 
 public class Restaurant {
     private String restuName;
-    private int noRestaurants;
+    private int floor;
     private String menu;
 
     public Restaurant() {
@@ -10,7 +10,7 @@ public class Restaurant {
 
     private Restaurant(Builder builder){
         this.restuName = builder.restuName;
-        this.noRestaurants = builder.noRestaurants;
+        this.floor = builder.floor;
         this.menu = builder.menu;
     }
 
@@ -18,8 +18,8 @@ public class Restaurant {
         return restuName;
     }
 
-    public int getNoResturants() {
-        return noRestaurants;
+    public int getFloor() {
+        return floor;
     }
 
     public String getMenu() {
@@ -27,15 +27,15 @@ public class Restaurant {
     }
 public static class Builder{
     private String restuName;
-    private int noRestaurants;
+    private int floor;
     private String menu;
 
     public Builder restuname(String restuName){
         this.restuName = restuName;
         return this;
     }
-    public Builder restaurantNo(int noRestaurants){
-        this.noRestaurants = noRestaurants;
+    public Builder floor(int floor){
+        this.floor = floor;
         return this;
     }
     public Builder menu(String menu){

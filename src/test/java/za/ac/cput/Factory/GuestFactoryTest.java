@@ -1,18 +1,17 @@
 package za.ac.cput.Factory;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 import za.ac.cput.Domain.Content.Guest;
+import za.ac.cput.Factory.GuestFactory;
 
-public class GuestFactoryTest extends TestCase {
+public class GuestFactoryTest {
 
     @Test
     public void guest(){
-        String name; int number; String address;
 
-        Guest guest = GuestFactory.findGuest("Sebe", 731906340, "10 Dorset Street");
-        Assert.assertEquals(guest.getName(), guest.getNumber());
+        Guest guest = GuestFactory.findGuest("Sebe", "0731906340", "10 Dorset Street");
+
+        Assert.assertEquals("Sebe 10 Dorset Street", guest.getName(), guest.getHomeAddress());
     }
-
 }

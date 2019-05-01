@@ -6,4 +6,5 @@ public class AdminFactory {
     public static Admin adminlogin(int id, String passW){
         return new Admin.Builder().ID(id).passWord(passW).build();
     }
+
 }

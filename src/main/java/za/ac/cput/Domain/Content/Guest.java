@@ -4,7 +4,7 @@ import za.ac.cput.Domain.Payment.Transaction;
 
 public class Guest extends Demographic implements Transaction {
     private String name;
-    private int number;
+    private String number;
     private String homeAddress;
 
     public Guest() {
@@ -20,7 +20,7 @@ public class Guest extends Demographic implements Transaction {
         return name;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
@@ -34,14 +34,14 @@ public class Guest extends Demographic implements Transaction {
 
     public static class Builder{
         private String name;
-        private int number;
+        private String number;
         private String homeAddress;
 
         public Builder name(String name){
             this.name = name;
             return this;
         }
-        public Builder number(int number){
+        public Builder number(String number){
             this.number = number;
             return this;
         }

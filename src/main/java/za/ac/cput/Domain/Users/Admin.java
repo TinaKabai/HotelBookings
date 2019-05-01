@@ -7,8 +7,18 @@ public class Admin {
     public Admin() {
     }
     private Admin(Builder builder){
-
+        this.ID = builder.ID;
+        this.password = builder.password;
     }
+
+    public int getID() {
+        return ID;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
 public static class Builder{
     private int ID;
     private String password;

@@ -5,7 +5,7 @@ public class Hotel {
     private int zip;
     private String hotelName;
     private String street;
-    private int telephone;
+    private String telephone;
     private String website;
 
     public Hotel() {
@@ -35,7 +35,7 @@ public class Hotel {
         return street;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return telephone;
     }
 
@@ -47,7 +47,7 @@ public static class Builder{
     private int zip;
     private String hotelName;
     private String street;
-    private int telephone;
+    private String telephone;
     private String website;
 
     public Builder city(String city){
@@ -66,7 +66,7 @@ public static class Builder{
         this.street = street;
         return this;
     }
-    public Builder telphone(int phone){
+    public Builder telphone(String phone){
         this.telephone = phone;
         return this;
     }
