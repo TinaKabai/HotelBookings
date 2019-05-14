@@ -2,34 +2,34 @@ package za.ac.cput.Domain.Tour;
 
 public class TourGuide {
     private String name;
-    private boolean availability;
+    private boolean available;
 
     public TourGuide() {
     }
 
     private TourGuide(Builder builder) {
-        this.name = name;
-        this.availability = availability;
+        this.name = builder.name;
+        this.available = builder.available;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isAvailability() {
-        return availability;
+    public boolean isAvailable() {
+        return available;
     }
 
     public static class Builder{
         private String name;
-        private boolean availability;
+        private boolean available;
 
         public Builder name(String name){
             this.name = name;
             return this;
         }
-        public Builder available(boolean availability){
-            this.availability = availability;
+        public Builder availability(boolean available){
+            this.available = available;
             return this;
         }
         public TourGuide build() {

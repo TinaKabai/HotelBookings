@@ -13,7 +13,7 @@ public class AdminFactoryTest{
 
         Admin a = AdminFactory.adminlogin(2002, "Kab@98");
 
-        Assert.assertEquals("2002, Kab@98", a.getID(), a.getPassword());
+        Assert.assertEquals(2002, a.getID());
     }
 
 }

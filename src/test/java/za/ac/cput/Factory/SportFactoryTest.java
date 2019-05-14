@@ -12,7 +12,7 @@ public class SportFactoryTest {
         Sport sport = SportFactory.findSport("Rugby",
                 "Tina", 30, "Cape Sun Hotel");
 
-        Assert.assertEquals("Tina Cape Sun Hotel", sport.getSportName(), sport.getHotelName());
+        Assert.assertEquals("Rugby", sport.getSportName());
     }
 
 }

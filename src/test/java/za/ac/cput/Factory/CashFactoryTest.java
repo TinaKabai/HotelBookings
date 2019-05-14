@@ -13,6 +13,6 @@ public class CashFactoryTest {
 
         Cash c = CashFactory.cash(1000.00, 55.00);
 
-        Assert.assertEquals(1000.00, c.getAmount());
+        Assert.assertNotEquals(100.00, c.getAmount());
     }
 }

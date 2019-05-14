@@ -10,8 +10,8 @@ public class RestaurantFactoryTest {
     @Test
     public void restaurant(){
 
-        Restaurant r = RestaurantFactory.findRestaurant("Riempies Restaurant ", 8, "Main");
+        Restaurant r = RestaurantFactory.findRestaurant("Riempies Restaurant", 8, "Main");
 
-        Assert.assertEquals("Riempies Restaurant Main", r.getRestuName(), r.getMenu());
+        Assert.assertEquals("Riempies Restaurant, 8 Main", "Riempies Restaurant", r.getRestuName());
     }
 }

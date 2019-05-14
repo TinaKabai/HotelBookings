@@ -14,7 +14,7 @@ public class CardFactoryTest {
 
         Card card = CardFactory.guestCard("6008158300567190 ", 2002);
 
-        Assert.assertEquals("6008158300567190 2002", card.getCardNo(), card.getPin());
+        Assert.assertEquals("6008158300567190 ", card.getCardNo());
     }
 
 }

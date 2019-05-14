@@ -12,6 +12,6 @@ public class GuestFactoryTest {
 
         Guest guest = GuestFactory.findGuest("Sebe", "0731906340", "10 Dorset Street");
 
-        Assert.assertEquals("Sebe 10 Dorset Street", guest.getName(), guest.getHomeAddress());
+        Assert.assertEquals("Sebe", guest.getName());
     }
 }

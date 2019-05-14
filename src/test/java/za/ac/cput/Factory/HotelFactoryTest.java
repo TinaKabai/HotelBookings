@@ -13,7 +13,7 @@ public class HotelFactoryTest {
         Hotel hotel = HotelFactory.chooseHotel("Cape Town ", 8000, "Cape Sun Hotel", "23 Strand St",
                 "021 488 5100", "https://southern-sun-cape-sun.capetown-hotels-za.com/en/");
 
-        Assert.assertEquals("Cape Town Cape Sun Hotel", hotel.getCity());
+        Assert.assertEquals("Cape Sun Hotel", hotel.getHotelName());
     }
 
 }

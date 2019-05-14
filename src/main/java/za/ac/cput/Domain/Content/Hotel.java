@@ -14,7 +14,7 @@ public class Hotel {
     private Hotel(Builder builder){
         this.city = builder.city;
         this.zip = builder.zip;
-        this.hotelName = builder.street;
+        this.hotelName = builder.hotelName;
         this.street = builder.street;
         this.telephone = builder.telephone;
         this.website = builder.website;
@@ -70,8 +70,8 @@ public static class Builder{
         this.telephone = phone;
         return this;
     }
-    public Builder website(String city){
-        this.city = city;
+    public Builder website(String website){
+        this.city = website;
         return this;
     }
     public Hotel build(){

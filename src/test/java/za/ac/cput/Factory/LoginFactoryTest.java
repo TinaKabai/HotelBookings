@@ -12,7 +12,7 @@ public class LoginFactoryTest {
 
         Login log = LoginFactory.login("TinaK", "Kab@98");
 
-        Assert.assertEquals("TinaK, Kab@98", log.getUsername(), log.getPassword());
+        Assert.assertEquals("TinaK", log.getUsername());
     }
 
 }

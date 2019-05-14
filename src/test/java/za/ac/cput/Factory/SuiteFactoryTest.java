@@ -1,14 +1,17 @@
 package za.ac.cput.Factory;
 
 import org.junit.Assert;
+import org.junit.Test;
 import za.ac.cput.Domain.Content.Suite;
 
 public class SuiteFactoryTest {
 
-    public void suite(){
+    @Test
+    public void suites(){
 
-        Suite s = SuiteFactory.suite(true);
+        Suite suit = SuiteFactory.suites(true);
 
-        Assert.assertEquals(true, s.isSuite());
+        Assert.assertEquals(true, suit.isSuite());
     }
+
 }

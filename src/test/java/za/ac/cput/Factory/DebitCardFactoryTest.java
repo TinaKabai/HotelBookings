@@ -13,7 +13,7 @@ public class DebitCardFactoryTest {
 
         DebitCard dbt = DebitCardFactory.dbtCard(1500.00);
 
-        Assert.assertEquals(1500.00, dbt.getDeductions());
+        Assert.assertNotEquals(150.00, dbt.getDeductions());
     }
 
 }

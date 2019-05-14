@@ -13,6 +13,6 @@ public class RegisterFactoryTest {
         Register reg = RegisterFactory.registration("Thato", "Kabai", "17 Feb 2002",
                 "TKL", "TK2002", "TK2002");
 
-        Assert.assertEquals("TK2002", reg.getPassword(), reg.getConfPassword());
+        Assert.assertEquals("Thato", reg.getFisrtName());
     }
 }

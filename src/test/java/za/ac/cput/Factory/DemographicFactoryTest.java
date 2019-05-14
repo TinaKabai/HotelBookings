@@ -12,7 +12,7 @@ public class DemographicFactoryTest {
 
         Demographic graphic = DemographicFactory.identifyDemo("Black", " Sotho ", 16, " Male");
 
-        Assert.assertEquals("Black Male", graphic.getRace(), graphic.getGender());
+        Assert.assertEquals("Black", graphic.getRace());
     }
 
 }
