@@ -16,7 +16,7 @@ public class EventServiceImpl {
         this.repository = EventRepositoryImpl.getRepository();
     }
 
-    public EventService getService (){
+    public EventService getService(){
         if (service == null) service = new EventServiceImpl();
         return null;
     }
