@@ -2,9 +2,9 @@ package za.ac.cput.Repository;
 
 import za.ac.cput.Domain.Activites.Event;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface EventRepository extends IRepository<Event, String> {
 
-    Set<Event> getAll();
+    Map<Event, Event> getAll();
 }

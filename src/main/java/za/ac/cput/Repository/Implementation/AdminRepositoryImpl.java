@@ -3,16 +3,23 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Users.Admin;
 import za.ac.cput.Repository.AdminRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdminRepositoryImpl implements AdminRepository {
 
     private static AdminRepositoryImpl repository = null;
-    private Set<Admin> admins;
+    private Map<Admin, Admin> admins;
 
     private AdminRepositoryImpl() {
-        this.admins = new HashSet<Admin>();
+        this.admins = new HashMap<>();
+    }
+
+    private Admin findAdmin(String adminId) {
+        return this.admins.values().stream()
+                .filter(admin -> admin.getID().trim().equals(adminId))
+                .findAny()
+                .orElse(null);
     }
 
     public static AdminRepositoryImpl getRepository() {
@@ -21,25 +28,30 @@ public class AdminRepositoryImpl implements AdminRepository {
     }
 
     public Admin create(Admin admin) {
-        this.admins.add(admin);
+        this.admins.put(admin, admin);
         return admin;
     }
 
-    public Admin read(String password) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Admin read(final String adminId){
+        Admin admin = findAdmin(adminId);
+        return admin;
     }
 
-    public void delete(String password) {
-        // find the course, delete it if it exist
+    public void delete(String adminId) {
+        Admin admin = findAdmin(adminId);
+        if (admin != null) this.admins.remove(admin);
     }
 
     public Admin update(Admin admin) {
-        // find the course, update it and delete it if it exists
-        return admin;
+        Admin toDelete = findAdmin(admin.getID());
+        if(toDelete != null) {
+            this.admins.remove(toDelete);
+            return create(admin);
+        }
+        return null;
     }
 
-    public Set<Admin> getAll(){
+    public Map<Admin, Admin> getAll(){
         return this.admins;
     }
 }

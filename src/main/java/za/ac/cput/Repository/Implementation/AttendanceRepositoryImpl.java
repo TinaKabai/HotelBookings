@@ -3,16 +3,23 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Tour.Attendance;
 import za.ac.cput.Repository.AttendanceRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttendanceRepositoryImpl implements AttendanceRepository {
 
     private static AttendanceRepositoryImpl repository = null;
-    private Set<Attendance> attendances;
+    private Map<Attendance, Attendance> attendances;
 
     private AttendanceRepositoryImpl() {
-        this.attendances = new HashSet<Attendance>();
+        this.attendances = new HashMap<>();
+    }
+
+    private Attendance attending(String guestName) {
+        return this.attendances.values().stream()
+                .filter(attendance -> attendance.getName().trim().equals(guestName))
+                .findAny()
+                .orElse(null);
     }
 
     public static AttendanceRepositoryImpl getRepository() {
@@ -20,25 +27,30 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
         return repository;
     }
     public Attendance create(Attendance attendance) {
-        this.attendances.add(attendance);
+        this.attendances.put(attendance, attendance);
         return attendance;
     }
 
-    public Attendance read(String name) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Attendance read(final String guestName){
+        Attendance attendance = attending(guestName);
+        return attendance;
     }
 
-    public void delete(String name) {
-        // find the course, delete it if it exist
+    public void delete(String guestName) {
+        Attendance attendance = attending(guestName);
+        if (attendance != null) this.attendances.remove(attendance);
     }
 
     public Attendance update(Attendance attendance) {
-        // find the course, update it and delete it if it exists
-        return attendance;
+        Attendance toDelete = attending(attendance.getName());
+        if(toDelete != null) {
+            this.attendances.remove(toDelete);
+            return create(attendance);
+        }
+        return null;
     }
 
-    public Set<Attendance> getAll(){
+    public Map<Attendance, Attendance> getAll(){
         return this.attendances;
     }
 }

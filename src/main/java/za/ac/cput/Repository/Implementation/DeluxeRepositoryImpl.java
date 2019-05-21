@@ -3,16 +3,23 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Content.Deluxe;
 import za.ac.cput.Repository.DeluxeRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DeluxeRepositoryImpl implements DeluxeRepository {
 
     private static DeluxeRepositoryImpl repository = null;
-    private Set<Deluxe> deluxes;
+    private Map<Deluxe, Deluxe> deluxes;
 
     private DeluxeRepositoryImpl() {
-        this.deluxes = new HashSet<Deluxe>();
+        this.deluxes = new HashMap<>();
+    }
+
+    private Deluxe isDeluxe(String roomType) {
+        return this.deluxes.values().stream()
+                .filter(deluxe -> deluxe.getRoomType().trim().equals(roomType))
+                .findAny()
+                .orElse(null);
     }
 
     public static DeluxeRepositoryImpl getRepository() {
@@ -20,26 +27,30 @@ public class DeluxeRepositoryImpl implements DeluxeRepository {
         return repository;
     }
 
-
     public Deluxe create(Deluxe deluxe) {
-        this.deluxes.add(deluxe);
+        this.deluxes.put(deluxe, deluxe);
         return deluxe;
     }
 
-    public Deluxe read(String roomType) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Deluxe read(final String roomType){
+        Deluxe deluxe = isDeluxe(roomType);
+        return deluxe;
     }
 
     public void delete(String roomType) {
-        // find the course, delete it if it exist
+        Deluxe deluxe = isDeluxe(roomType);
+        if (roomType != null) this.deluxes.remove(deluxe);
     }
 
     public Deluxe update(Deluxe deluxe) {
-        // find the course, update it and delete it if it exists
-        return deluxe;
+        Deluxe toDelete = isDeluxe(deluxe.getRoomType());
+        if(toDelete != null) {
+            this.deluxes.remove(toDelete);
+            return create(deluxe);
+        }
+        return null;
     }
-    public Set<Deluxe> getAll(){
+    public Map<Deluxe, Deluxe> getAll(){
         return this.deluxes;
     }
 }

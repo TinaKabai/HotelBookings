@@ -3,16 +3,23 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Content.Booking;
 import za.ac.cput.Repository.BookingRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BookingRepositoryImpl implements BookingRepository {
 
     private static BookingRepositoryImpl repository = null;
-    private Set<Booking> bookings;
+    private Map<Booking, Booking> bookings;
 
     private BookingRepositoryImpl() {
-        this.bookings = new HashSet<Booking>();
+        this.bookings = new HashMap<>();
+    }
+
+    private Booking booked(String guestName) {
+        return this.bookings.values().stream()
+                .filter(booking -> booking.getName().trim().equals(guestName))
+                .findAny()
+                .orElse(null);
     }
 
     public static BookingRepositoryImpl getRepository() {
@@ -20,27 +27,32 @@ public class BookingRepositoryImpl implements BookingRepository {
         return repository;
     }
 
-
     public Booking create(Booking booking) {
-        this.bookings.add(booking);
+        this.bookings.put(booking, booking);
         return booking;
     }
 
-    public Booking read(String name) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Booking read(final String guestName){
+        Booking booking = booked(guestName);
+        return booking;
     }
 
-    public void delete(String name) {
-        // find the course, delete it if it exist
+    public void delete(String guestName) {
+        Booking booking = booked(guestName);
+        if (booking != null) this.bookings.remove(booking);
     }
 
     public Booking update(Booking booking) {
-        // find the course, update it and delete it if it exists
-        return booking;
+        Booking toDelete = booked(booking.getName());
+        if(toDelete != null) {
+            this.bookings.remove(toDelete);
+            return create(booking);
+        }
+        return null;
     }
 
-    public Set<Booking> getAll(){
+    public Map<Booking, Booking> getAll(){
         return this.bookings;
     }
+
 }

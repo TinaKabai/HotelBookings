@@ -3,16 +3,25 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Activites.Event;
 import za.ac.cput.Repository.EventRepository;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class EventRepositoryImpl implements EventRepository {
 
     private static EventRepositoryImpl repository = null;
-    private Set<Event> events;
+    private Map<Event, Event> events;
 
     private EventRepositoryImpl() {
-        this.events = new HashSet<Event>();
+        this.events = new HashMap<>();
+    }
+
+    private Event theEvent(String eventName) {
+        return this.events.values().stream()
+                .filter(event -> event.getEvName().trim().equals(eventName))
+                .findAny()
+                .orElse(null);
     }
 
     public static EventRepositoryImpl getRepository() {
@@ -20,27 +29,31 @@ public class EventRepositoryImpl implements EventRepository {
         return repository;
     }
 
-
     public Event create(Event event) {
-        this.events.add(event);
+        this.events.put(event, event);
         return event;
     }
 
-    public Event read(String evName) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Event read(final String eventName){
+        Event event = theEvent(eventName);
+        return event;
     }
 
-    public void delete(String evName) {
-        // find the course, delete it if it exist
+    public void delete(String eventName) {
+        Event event = theEvent(eventName);
+        if (event != null) this.events.remove(event);
     }
 
     public Event update(Event event) {
-        // find the course, update it and delete it if it exists
-        return event;
+        Event toDelete = theEvent(event.getEvName());
+        if(toDelete != null) {
+            this.events.remove(toDelete);
+            return create(event);
+        }
+        return null;
     }
 
-    public Set<Event> getAll(){
+    public Map<Event, Event> getAll(){
         return this.events;
     }
 }

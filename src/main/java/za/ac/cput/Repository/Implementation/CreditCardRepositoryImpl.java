@@ -3,16 +3,25 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Payment.CreditCard;
 import za.ac.cput.Repository.CreditCardRepository;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class CreditCardRepositoryImpl implements CreditCardRepository {
 
     private static CreditCardRepositoryImpl repository = null;
-    private Set<CreditCard> creditCards;
+    private Map<CreditCard, CreditCard> creditCards;
 
     private CreditCardRepositoryImpl() {
-        this.creditCards = new HashSet<CreditCard>();
+        this.creditCards = new HashMap<>();
+    }
+
+    private CreditCard hasCreditCard(String cardNo) {
+        return this.creditCards.values().stream()
+                .filter(creditCard -> creditCard.getCardNo().trim().equals(cardNo))
+                .findAny()
+                .orElse(null);
     }
 
     public static CreditCardRepositoryImpl getRepository() {
@@ -20,26 +29,30 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
         return repository;
     }
 
-
     public CreditCard create(CreditCard creditCard) {
-        this.creditCards.add(creditCard);
+        this.creditCards.put(creditCard, creditCard);
         return creditCard;
     }
 
-    public CreditCard read(String cardNo) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public CreditCard read(final String cardNo){
+        CreditCard card = hasCreditCard(cardNo);
+        return card;
     }
 
     public void delete(String cardNo) {
-        // find the course, delete it if it exist
+        CreditCard creditCard = hasCreditCard(cardNo);
+        if (cardNo != null) this.creditCards.remove(creditCard);
     }
 
     public CreditCard update(CreditCard creditCard) {
-        // find the course, update it and delete it if it exists
-        return creditCard;
+        CreditCard toDelete = hasCreditCard(creditCard.getCardNo());
+        if(toDelete != null) {
+            this.creditCards.remove(toDelete);
+            return create(creditCard);
+        }
+        return null;
     }
-    public Set<CreditCard> getAll(){
+    public Map<CreditCard, CreditCard> getAll(){
         return this.creditCards;
     }
 }

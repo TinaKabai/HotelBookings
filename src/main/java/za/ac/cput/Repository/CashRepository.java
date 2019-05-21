@@ -2,9 +2,9 @@ package za.ac.cput.Repository;
 
 import za.ac.cput.Domain.Payment.Cash;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface CashRepository extends IRepository<Cash, String> {
 
-    Set<Cash> getAll();
+    Map<Cash, Cash> getAll();
 }

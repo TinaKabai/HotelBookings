@@ -3,50 +3,54 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Payment.Cash;
 import za.ac.cput.Repository.CashRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CashRepositoryImpl implements CashRepository {
 
     private static CashRepositoryImpl repository = null;
-    private Set<Cash> cash;
+    private Map<Cash, Cash> cashs;
 
     private CashRepositoryImpl() {
-        this.cash = new HashSet<Cash>();
+        this.cashs = new HashMap<>();
+    }
+
+    private Cash hasCash(String amount) {
+        return this.cashs.values().stream()
+                .filter(cash -> cash.getAmount().trim().equals(amount))
+                .findAny()
+                .orElse(null);
     }
 
     public static CashRepositoryImpl getRepository() {
         if (repository == null) repository = new CashRepositoryImpl();
         return repository;
     }
-    public Cash create(Cash cash1) {
-        this.cash.add(cash1);
-        return cash1;
+    public Cash create(Cash cash) {
+        this.cashs.put(cash, cash);
+        return cash;
     }
 
-    public Cash read(double amount) {
-        // find the course that matches the id and return it if exist
+    public Cash read(String amount){
+        Cash cash = hasCash(amount);
+        return cash;
+    }
+
+    public void delete(String amount) {
+        Cash cash = hasCash(amount);
+        if (cash != null) this.cashs.remove(cash);
+    }
+
+    public Cash update(Cash cash) {
+        Cash toDelete = hasCash(cash.getAmount());
+        if(toDelete != null) {
+            this.cashs.remove(toDelete);
+            return create(cash);
+        }
         return null;
     }
 
-    public void delete(double amount) {
-        // find the course, delete it if it exist
-    }
-
-    public Cash update(Cash cash1) {
-        // find the course, update it and delete it if it exists
-        return cash1;
-    }
-
-    public void delete(String s) {
-
-    }
-
-    public Cash read(String s) {
-        return null;
-    }
-
-    public Set<Cash> getAll(){
-        return this.cash;
+    public Map<Cash, Cash> getAll(){
+        return this.cashs;
     }
 }

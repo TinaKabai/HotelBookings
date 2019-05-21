@@ -5,7 +5,7 @@ import za.ac.cput.Repository.EventRepository;
 import za.ac.cput.Repository.Implementation.EventRepositoryImpl;
 import za.ac.cput.Service.EventService;
 
-import java.util.Set;
+import java.util.Map;
 
 public class EventServiceImpl {
 
@@ -42,13 +42,13 @@ public class EventServiceImpl {
     }
 
     //@Override
-    public Set<Event> getAllHotelEvents() {
-        Set<Event> events = getAll();
+    public Map<Event, Event> getAllHotelEvents() {
+        Map<Event, Event> events = getAll();
         return null;
     }
 
     //@Override
-    public Set<Event> getAll() {
+    public Map<Event, Event> getAll() {
         return this.repository.getAll();
     }
 }

@@ -6,6 +6,7 @@ import org.junit.Test;
 import za.ac.cput.Domain.Activites.Event;
 import za.ac.cput.Repository.Implementation.EventRepositoryImpl;
 
+import java.util.Map;
 import java.util.Set;
 
 public class EventRepositoryImplTest {
@@ -42,7 +43,7 @@ public class EventRepositoryImplTest {
 
     @Test
     public void getAll() {
-        Set<Event> events = this.repository.getAll();
+        Map<Event, Event> events = this.repository.getAll();
         Assert.assertEquals(1, events.size());
     }
 

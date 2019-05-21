@@ -1,17 +1,26 @@
 package za.ac.cput.Repository.Implementation;
 
 import za.ac.cput.Domain.Tour.Groups;
+import za.ac.cput.Repository.GroupsRepository;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-public class GroupsRepositoryImpl {
+
+public class GroupsRepositoryImpl implements GroupsRepository {
 
     private static GroupsRepositoryImpl repository = null;
-    private Set<Groups> groups;
+    private Map<Groups, Groups> groups;
 
     private GroupsRepositoryImpl() {
-        this.groups = new HashSet<Groups>();
+        this.groups = new HashMap<>();
+    }
+
+    private Groups theGroup(String gName) {
+        return this.groups.values().stream()
+                .filter(group -> group.getGroupName().trim().equals(gName))
+                .findAny()
+                .orElse(null);
     }
 
     public static GroupsRepositoryImpl getRepository() {
@@ -19,25 +28,30 @@ public class GroupsRepositoryImpl {
         return repository;
     }
     public Groups create(Groups group) {
-        this.groups.add(group);
+        this.groups.put(group, group);
         return group;
     }
 
-    public Groups read(String name) {
-        // find the course that matches the id and return it if exist
+    public Groups read(final String gName){
+        Groups group = theGroup(gName);
+        return group;
+    }
+
+    public void delete(String gName) {
+        Groups group = theGroup(gName);
+        if (gName != null) this.groups.remove(group);
+    }
+
+    public Groups update(Groups group) {
+        Groups toDelete = theGroup(group.getGroupName());
+        if(toDelete != null) {
+            this.groups.remove(toDelete);
+            return create(group);
+        }
         return null;
     }
 
-    public void delete(String name) {
-        // find the course, delete it if it exist
-    }
-
-    public Groups update(Groups attendance) {
-        // find the course, update it and delete it if it exists
-        return attendance;
-    }
-
-    public Set<Groups> getAll(){
+    public Map<Groups, Groups> getAll(){
         return this.groups;
     }
 }

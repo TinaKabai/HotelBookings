@@ -11,9 +11,9 @@ public class AdminFactoryTest{
 
     public void admin(){
 
-        Admin a = AdminFactory.adminlogin(2002, "Kab@98");
+        Admin a = AdminFactory.adminlogin("2002TK", "Kab@98");
 
-        Assert.assertEquals(2002, a.getID());
+        Assert.assertEquals("2002TK", a.getID());
     }
 
 }

@@ -1,7 +1,7 @@
 package za.ac.cput.Domain.Users;
 
 public class Admin {
-    private int ID;
+    private String ID;
     private String password;
 
     public Admin() {
@@ -11,7 +11,7 @@ public class Admin {
         this.password = builder.password;
     }
 
-    public int getID() {
+    public String getID() {
         return ID;
     }
 
@@ -20,10 +20,10 @@ public class Admin {
     }
 
 public static class Builder{
-    private int ID;
+    private String ID;
     private String password;
 
-    public Builder ID(int id){
+    public Builder ID(String id){
         this.ID = id;
         return this;
     }

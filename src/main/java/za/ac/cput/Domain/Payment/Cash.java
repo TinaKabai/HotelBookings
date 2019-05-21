@@ -2,7 +2,7 @@ package za.ac.cput.Domain.Payment;
 
 public class Cash implements Transaction {
 
-    private double amount;
+    private String amount;
     private double change;
 
     public Cash() {
@@ -13,22 +13,24 @@ public class Cash implements Transaction {
         this.change = builder.change;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
+
     public double getChange() {
         return change;
     }
+
     // method implemented from Transaction interface
     public double pay() {
         return 0;
     }
 
 public static class Builder{
-    private double amount;
+    private String amount;
     private double change;
 
-    public Builder amount(double amount){
+    public Builder amount(String amount){
         this.amount = amount;
         return this;
     }

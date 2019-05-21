@@ -2,9 +2,9 @@ package za.ac.cput.Repository;
 
 import za.ac.cput.Domain.Users.Admin;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface AdminRepository extends IRepository<Admin, String> {
 
-    Set<Admin> getAll();
+    Map<Admin, Admin> getAll();
 }
