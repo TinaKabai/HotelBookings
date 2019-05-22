@@ -12,7 +12,14 @@ public class SuiteRepositoryImpl implements SuiteRepository {
     private Set<Suite> suites;
 
     private SuiteRepositoryImpl() {
-        this.suites = new HashSet<Suite>();
+        this.suites = new HashSet<>();
+    }
+
+    private Suite isSuite(String roomType) {
+        return this.suites.stream()
+                .filter(suite -> suite.getRoomType().trim().equals(roomType))
+                .findAny()
+                .orElse(null);
     }
 
     public static SuiteRepositoryImpl getRepository() {
@@ -24,18 +31,23 @@ public class SuiteRepositoryImpl implements SuiteRepository {
         return suite;
     }
 
-    public Suite read(String roomType) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Suite read(final String roomType){
+        Suite suite = isSuite(roomType);
+        return suite;
     }
 
     public void delete(String roomType) {
-        // find the course, delete it if it exist
+        Suite suite = isSuite(roomType);
+        if (suite != null) this.suites.remove(suite);
     }
 
     public Suite update(Suite suite) {
-        // find the course, update it and delete it if it exists
-        return suite;
+        Suite toDelete = isSuite(suite.getRoomType());
+        if(toDelete != null) {
+            this.suites.remove(toDelete);
+            return create(suite);
+        }
+        return null;
     }
     public Set<Suite> getAll(){
         return this.suites;

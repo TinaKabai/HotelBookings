@@ -39,7 +39,7 @@ public class DemographicRepositoryImpl implements DemographicRepository {
 
     public void delete(String race) {
         Demographic demographic = theDemographic(race);
-        if (race != null) this.demographics.remove(demographic);
+        if (demographic != null) this.demographics.remove(demographic);
     }
 
     public Demographic update(Demographic demographic) {

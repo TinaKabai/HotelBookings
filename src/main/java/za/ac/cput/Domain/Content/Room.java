@@ -69,5 +69,15 @@ public class Room {
     public Room build() {
         return new Room(this);
     }
+
+        public Builder copy(Room room) {
+            this.roomNo = room.roomNo;
+            this.roomType = room.roomType;
+            this.roomStatus = room.roomStatus;
+            this.floor = room.floor;
+            this.price = room.price;
+
+            return this;
+        }
 }
 }

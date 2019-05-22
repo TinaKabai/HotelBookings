@@ -34,5 +34,12 @@ public static class Builder{
     public Admin build(){
         return new Admin(this);
     }
+
+    public Builder copy(Admin admin) {
+        this.password = admin.password;
+        this.ID = admin.ID;
+
+        return this;
+    }
 }
 }

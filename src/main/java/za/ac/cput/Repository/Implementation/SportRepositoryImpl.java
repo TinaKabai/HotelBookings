@@ -12,7 +12,14 @@ public class SportRepositoryImpl implements SportRepository {
     private Set<Sport> sports;
 
     private SportRepositoryImpl() {
-        this.sports = new HashSet<Sport>();
+        this.sports = new HashSet<>();
+    }
+
+    private Sport theSport(String sportName) {
+        return this.sports.stream()
+                .filter(sport -> sport.getSportName().trim().equals(sportName))
+                .findAny()
+                .orElse(null);
     }
 
     public static SportRepositoryImpl getRepository() {
@@ -24,18 +31,23 @@ public class SportRepositoryImpl implements SportRepository {
         return sport;
     }
 
-    public Sport read(String sportName) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Sport read(final String sportName){
+        Sport sport = theSport(sportName);
+        return sport;
     }
 
     public void delete(String sportName) {
-        // find the course, delete it if it exist
+        Sport sport = theSport(sportName);
+        if (sport != null) this.sports.remove(sport);
     }
 
     public Sport update(Sport sport) {
-        // find the course, update it and delete it if it exists
-        return sport;
+        Sport toDelete = theSport(sport.getSportName());
+        if(toDelete != null) {
+            this.sports.remove(toDelete);
+            return create(sport);
+        }
+        return null;
     }
 
     public Set<Sport> getAll(){

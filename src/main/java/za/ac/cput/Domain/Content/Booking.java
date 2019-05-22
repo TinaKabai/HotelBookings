@@ -28,5 +28,11 @@ public class Booking extends  Guest implements Transaction {
         public Booking build() {
             return new Booking(this);
         }
+
+        public Builder copy(Booking booking) {
+            this.pay = booking.pay;
+
+            return this;
+        }
     }
 }

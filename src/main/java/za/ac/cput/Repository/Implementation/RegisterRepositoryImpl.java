@@ -12,7 +12,14 @@ public class RegisterRepositoryImpl implements RegisterRepository {
     private Set<Register> registers;
 
     private RegisterRepositoryImpl() {
-        this.registers = new HashSet<Register>();
+        this.registers = new HashSet<>();
+    }
+
+    private Register registration(String firstname) {
+        return this.registers.stream()
+                .filter(register -> register.getFisrtName().trim().equals(firstname))
+                .findAny()
+                .orElse(null);
     }
 
     public static RegisterRepositoryImpl getRepository() {
@@ -25,18 +32,23 @@ public class RegisterRepositoryImpl implements RegisterRepository {
         return register;
     }
 
-    public Register read(String fisrtName) {
-        // find the course that matches the id and return it if exist
-        return null;
-    }
-
-    public void delete(String fisrtName) {
-        // find the course, delete it if it exist
-    }
-
-    public Register update(Register register) {
-        // find the course, update it and delete it if it exists
+    public Register read(final String firstname){
+        Register register = registration(firstname);
         return register;
+    }
+
+    public void delete(String firstname) {
+        Register register = registration(firstname);
+        if (register != null) this.registers.remove(register);
+    }
+
+    public Register update(Register register){
+        Register toDelete = registration(register.getFisrtName());
+        if(toDelete != null) {
+            this.registers.remove(toDelete);
+            return create(register);
+        }
+        return null;
     }
 
     public Set<Register> getAll(){

@@ -12,7 +12,14 @@ public class ServicesRepositoryImpl implements ServicesRepository {
     private Set<Services> services;
 
     private ServicesRepositoryImpl() {
-        this.services = new HashSet<Services>();
+        this.services = new HashSet<>();
+    }
+
+    private Services theSerices(String serviceName) {
+        return this.services.stream()
+                .filter(service -> service.getServName().trim().equals(serviceName))
+                .findAny()
+                .orElse(null);
     }
 
     public static ServicesRepositoryImpl getRepository() {
@@ -24,18 +31,23 @@ public class ServicesRepositoryImpl implements ServicesRepository {
         return services1;
     }
 
-    public Services read(String servName) {
-        // find the course that matches the id and return it if exist
+    public Services read(final String serviceName){
+        Services service = theSerices(serviceName);
+        return service;
+    }
+
+    public void delete(String roomType) {
+        Services service = theSerices(roomType);
+        if (service != null) this.services.remove(service);
+    }
+
+    public Services update(Services service) {
+        Services toDelete = theSerices(service.getServName());
+        if(toDelete != null) {
+            this.services.remove(toDelete);
+            return create(service);
+        }
         return null;
-    }
-
-    public void delete(String servName) {
-        // find the course, delete it if it exist
-    }
-
-    public Services update(Services services1) {
-        // find the course, update it and delete it if it exists
-        return services1;
     }
 
     public Set<Services> getAll(){

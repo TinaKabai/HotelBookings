@@ -54,5 +54,14 @@ public static class Builder{
     public Demographic build(){
         return new Demographic(this);
     }
+
+    public Builder copy(Demographic demographic) {
+        this.race = demographic.race;
+        this.culture = demographic.culture;
+        this.age = demographic.age;
+        this.gender = demographic.gender;
+
+        return this;
+    }
 }
 }

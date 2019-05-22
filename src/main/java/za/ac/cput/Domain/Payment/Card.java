@@ -44,5 +44,12 @@ public class Card implements Transaction {
         public Card build() {
             return new Card(this);
         }
+
+        public Builder copy(Card card) {
+            this.cardNo = card.cardNo;
+            this.pin = card.pin;
+
+            return this;
+        }
     }
 }

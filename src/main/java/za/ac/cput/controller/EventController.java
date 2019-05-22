@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/sms/course")
+@RequestMapping("/HotelBookings/events")
 public class EventController {
 
 

@@ -15,6 +15,13 @@ public class LoginRepositoryImpl implements LoginRepository {
         this.logins = new HashSet<Login>();
     }
 
+    private Login logsIn(String username) {
+        return this.logins.stream()
+                .filter(login -> login.getUsername().trim().equals(username))
+                .findAny()
+                .orElse(null);
+    }
+
     public static LoginRepositoryImpl getRepository() {
         if (repository == null) repository = new LoginRepositoryImpl();
         return repository;
@@ -25,18 +32,23 @@ public class LoginRepositoryImpl implements LoginRepository {
         return login;
     }
 
-    public Login read(String username) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Login read(final String username){
+        Login login = logsIn(username);
+        return login;
     }
 
     public void delete(String username) {
-        // find the course, delete it if it exist
+        Login login = logsIn(username);
+        if (login != null) this.logins.remove(login);
     }
 
-    public Login update(Login login) {
-        // find the course, update it and delete it if it exists
-        return login;
+    public Login update(Login login){
+        Login toDelete = logsIn(login.getUsername());
+        if(toDelete != null) {
+            this.logins.remove(toDelete);
+            return create(login);
+        }
+        return null;
     }
 
     public Set<Login> getAll(){

@@ -39,7 +39,7 @@ public class DebitCardRepositoryImpl implements DebitCardRepository {
 
     public void delete(String cardNo) {
         DebitCard debitCard = hasDebitCard(cardNo);
-        if (cardNo != null) this.debitCards.remove(debitCard);
+        if (debitCard != null) this.debitCards.remove(debitCard);
     }
 
     public DebitCard update(DebitCard creditCard) {

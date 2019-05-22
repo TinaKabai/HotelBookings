@@ -56,6 +56,15 @@ public class Sport {
         public Sport build(){
             return new Sport(this);
         }
+
+        public Builder copy(Sport sport) {
+            this.sportName = sport.sportName;
+            this.participant = sport.participant;
+            this.noParticipants = sport.noParticipants;
+            this.hotelName = sport.hotelName;
+
+            return this;
+        }
     }
 
 }

@@ -44,5 +44,13 @@ public class Groups {
         public Groups build() {
             return new Groups(this);
         }
+
+        public Builder copy(Groups groups) {
+            this.groupName = groups.groupName;
+            this.noOfGroups = groups.noOfGroups;
+            this.members = groups.members;
+
+            return this;
+        }
     }
 }

@@ -27,5 +27,11 @@ public class Attendance extends Guest {
         public Attendance build() {
             return new Attendance(this);
         }
+
+        public Builder copy(Attendance attendance) {
+            this.attending = attendance.attending;
+
+            return this;
+        }
     }
 }

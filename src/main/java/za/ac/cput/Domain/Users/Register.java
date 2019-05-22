@@ -76,5 +76,16 @@ public static class Builder{
    public Register build(){
         return new Register(this);
    }
+
+    public Builder copy(Register register) {
+        this.fisrtName = register.fisrtName;
+        this.lastName = register.lastName;
+        this.DOB = register.DOB;
+        this.username = register.username;
+        this.password = register.password;
+        this.confPassword = register.confPassword;
+
+        return this;
+    }
 }
 }

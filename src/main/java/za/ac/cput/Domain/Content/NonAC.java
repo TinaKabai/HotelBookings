@@ -28,5 +28,11 @@ public class NonAC extends Room {
         public NonAC build() {
             return new NonAC(this);
         }
+
+        public Builder copy(NonAC nonAC) {
+            this.nonAC = nonAC.nonAC;
+
+            return this;
+        }
     }
 }

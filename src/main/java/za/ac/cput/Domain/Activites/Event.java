@@ -63,5 +63,13 @@ public class Event implements Transaction {
     public Event build(){
         return new Event(this);
     }
+
+        public Builder copy(Event event) {
+            this.evName = event.evName;
+            this.hotelName = event.hotelName;
+            this.date = event.date;
+
+            return this;
+        }
 }
 }

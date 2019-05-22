@@ -39,7 +39,7 @@ public class GroupsRepositoryImpl implements GroupsRepository {
 
     public void delete(String gName) {
         Groups group = theGroup(gName);
-        if (gName != null) this.groups.remove(group);
+        if (group != null) this.groups.remove(group);
     }
 
     public Groups update(Groups group) {

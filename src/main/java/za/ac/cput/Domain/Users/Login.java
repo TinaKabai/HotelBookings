@@ -32,5 +32,12 @@ public static class Builder{
     public Login build(){
         return new Login(this);
     }
+
+    public Builder copy(Login login) {
+        this.username = login.username;
+        this.password = login.password;
+
+        return this;
+    }
 }
 }

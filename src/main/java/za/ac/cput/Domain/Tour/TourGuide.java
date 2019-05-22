@@ -35,5 +35,12 @@ public class TourGuide {
         public TourGuide build() {
             return new TourGuide(this);
         }
+
+        public Builder copy(TourGuide tourGuide) {
+            this.name = tourGuide.name;
+            this.available = tourGuide.available;
+
+            return this;
+        }
     }
 }

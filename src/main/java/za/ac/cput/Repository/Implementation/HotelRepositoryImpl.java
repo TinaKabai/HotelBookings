@@ -12,7 +12,14 @@ public class HotelRepositoryImpl implements HotelRepository {
     private Set<Hotel> hotels;
 
     private HotelRepositoryImpl() {
-        this.hotels = new HashSet<Hotel>();
+        this.hotels = new HashSet<>();
+    }
+
+    private Hotel findHotel(String hotelName) {
+        return this.hotels.stream()
+                .filter(hotel -> hotel.getHotelName().trim().equals(hotelName))
+                .findAny()
+                .orElse(null);
     }
 
     public static HotelRepositoryImpl getRepository() {
@@ -20,24 +27,28 @@ public class HotelRepositoryImpl implements HotelRepository {
         return repository;
     }
 
-
-    public Hotel create(Hotel hotel) {
+    public Hotel create(Hotel hotel){
         this.hotels.add(hotel);
         return hotel;
     }
 
-    public Hotel read(String hotelName) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public Hotel read(final String hotelName){
+        Hotel hotel = findHotel(hotelName);
+        return hotel;
     }
 
     public void delete(String hotelName) {
-        // find the course, delete it if it exist
+        Hotel hotel = findHotel(hotelName);
+        if (hotel != null) this.hotels.remove(hotel);
     }
 
-    public Hotel update(Hotel hotel) {
-        // find the course, update it and delete it if it exists
-        return hotel;
+    public Hotel update(Hotel hotel){
+        Hotel toDelete = findHotel(hotel.getHotelName());
+        if(toDelete != null) {
+            this.hotels.remove(toDelete);
+            return create(hotel);
+        }
+        return null;
     }
 
     public Set<Hotel> getAll(){

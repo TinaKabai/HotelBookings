@@ -45,5 +45,13 @@ public static class Builder{
     public Restaurant build(){
         return new Restaurant(this);
     }
+
+    public Builder copy(Restaurant restaurant) {
+        this.restuName = restaurant.restuName;
+        this.floor = restaurant.floor;
+        this.menu = restaurant.menu;
+
+        return this;
+    }
 }
 }

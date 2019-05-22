@@ -3,7 +3,9 @@ package za.ac.cput.Repository.Implementation;
 import za.ac.cput.Domain.Content.NonAC;
 import za.ac.cput.Repository.NonACRepository;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class NonACRepositoryImpl implements NonACRepository {
@@ -12,7 +14,14 @@ public class NonACRepositoryImpl implements NonACRepository {
     private Set<NonAC> nonACs;
 
     private NonACRepositoryImpl() {
-        this.nonACs = new HashSet<NonAC>();
+        this.nonACs = new HashSet<>();
+    }
+
+    private NonAC isNonAC(String roomType) {
+        return this.nonACs.stream()
+                .filter(nonAC -> nonAC.getRoomType().trim().equals(roomType))
+                .findAny()
+                .orElse(null);
     }
 
     public static NonACRepositoryImpl getRepository() {
@@ -20,24 +29,28 @@ public class NonACRepositoryImpl implements NonACRepository {
         return repository;
     }
 
-
     public NonAC create(NonAC nonAC) {
         this.nonACs.add(nonAC);
         return nonAC;
     }
 
-    public NonAC read(String roomType) {
-        // find the course that matches the id and return it if exist
-        return null;
+    public NonAC read(final String roomType){
+        NonAC nonAC = isNonAC(roomType);
+        return nonAC;
     }
 
     public void delete(String roomType) {
-        // find the course, delete it if it exist
+        NonAC nonAC = isNonAC(roomType);
+        if (nonAC != null) this.nonACs.remove(nonAC);
     }
 
     public NonAC update(NonAC nonAC) {
-        // find the course, update it and delete it if it exists
-        return nonAC;
+        NonAC toDelete = isNonAC(nonAC.getRoomType());
+        if(toDelete != null) {
+            this.nonACs.remove(toDelete);
+            return create(nonAC);
+        }
+        return null;
     }
     public Set<NonAC> getAll(){
         return this.nonACs;

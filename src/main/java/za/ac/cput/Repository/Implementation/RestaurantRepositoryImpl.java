@@ -12,7 +12,14 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
     private Set<Restaurant> restaurants;
 
     private RestaurantRepositoryImpl() {
-        this.restaurants = new HashSet<Restaurant>();
+        this.restaurants = new HashSet<>();
+    }
+
+    private Restaurant theRestaurant(String restName) {
+        return this.restaurants.stream()
+                .filter(restaurant -> restaurant.getRestuName().trim().equals(restName))
+                .findAny()
+                .orElse(null);
     }
 
     public static RestaurantRepositoryImpl getRepository() {
@@ -20,25 +27,30 @@ public class RestaurantRepositoryImpl implements RestaurantRepository {
         return repository;
     }
 
-
-    public Restaurant create(Restaurant restaurant) {
-        this.restaurants.add(restaurant);
+    public Restaurant read(final String restName){
+        Restaurant restaurant = theRestaurant(restName);
         return restaurant;
     }
 
-    public Restaurant read(String restuName) {
-        // find the course that matches the id and return it if exist
+    public void delete(String restName) {
+        Restaurant restaurant = theRestaurant(restName);
+        if (restaurant != null) this.restaurants.remove(restaurant);
+    }
+
+    @Override
+    public Restaurant create(Restaurant restaurant) {
+        return restaurant;
+    }
+
+    public Restaurant update(Restaurant restaurant){
+        Restaurant toDelete = theRestaurant(restaurant.getRestuName());
+        if(toDelete != null) {
+            this.restaurants.remove(toDelete);
+            return create(restaurant);
+        }
         return null;
     }
 
-    public void delete(String restuName) {
-        // find the course, delete it if it exist
-    }
-
-    public Restaurant update(Restaurant restaurant) {
-        // find the course, update it and delete it if it exists
-        return restaurant;
-    }
     public Set<Restaurant> getAll(){
         return this.restaurants;
     }

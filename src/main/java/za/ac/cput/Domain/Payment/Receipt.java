@@ -68,5 +68,15 @@ public class Receipt extends Card {
         public Receipt build() {
             return new Receipt(this);
         }
+
+        public Builder copy(Receipt receipt) {
+            this.date = receipt.date;
+            this.branchNo = receipt.branchNo;
+            this.itemDescription = receipt.itemDescription;
+            this.paymentRef = receipt.paymentRef;
+            this.transactionId = receipt.transactionId;
+
+            return this;
+        }
     }
 }

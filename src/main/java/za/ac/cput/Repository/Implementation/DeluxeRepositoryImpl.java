@@ -39,7 +39,7 @@ public class DeluxeRepositoryImpl implements DeluxeRepository {
 
     public void delete(String roomType) {
         Deluxe deluxe = isDeluxe(roomType);
-        if (roomType != null) this.deluxes.remove(deluxe);
+        if (deluxe != null) this.deluxes.remove(deluxe);
     }
 
     public Deluxe update(Deluxe deluxe) {

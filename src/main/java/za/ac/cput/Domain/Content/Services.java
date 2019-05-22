@@ -51,5 +51,13 @@ public class Services {
     public Services build() {
         return new Services(this);
     }
+
+        public Builder copy(Services services) {
+            this.sName = services.servName;
+            this.description = services.description;
+            this.price = services.price;
+
+            return this;
+        }
 }
 }

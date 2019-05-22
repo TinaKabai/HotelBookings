@@ -12,7 +12,14 @@ public class ReceiptRepositoryImpl implements ReceiptRepository {
     private Set<Receipt> receipts;
 
     private ReceiptRepositoryImpl() {
-        this.receipts = new HashSet<Receipt>();
+        this.receipts = new HashSet<>();
+    }
+
+    private Receipt theReceipt(String itemDescription) {
+        return this.receipts.stream()
+                .filter(receipt -> receipt.getItemDescription().trim().equals(itemDescription))
+                .findAny()
+                .orElse(null);
     }
 
     public static ReceiptRepositoryImpl getRepository() {
@@ -25,18 +32,23 @@ public class ReceiptRepositoryImpl implements ReceiptRepository {
         return receipt;
     }
 
-    public Receipt read(String password) {
-        // find the course that matches the id and return it if exist
-        return null;
-    }
-
-    public void delete(String paymentRef) {
-        // find the course, delete it if it exist
-    }
-
-    public Receipt update(Receipt receipt) {
-        // find the course, update it and delete it if it exists
+    public Receipt read(final String itemDescription){
+        Receipt receipt = theReceipt(itemDescription);
         return receipt;
+    }
+
+    public void delete(String itemDescription) {
+        Receipt receipt = theReceipt(itemDescription);
+        if (receipt != null) this.receipts.remove(receipt);
+    }
+
+    public Receipt update(Receipt receipt){
+        Receipt toDelete = theReceipt(receipt.getItemDescription());
+        if(toDelete != null) {
+            this.receipts.remove(toDelete);
+            return create(receipt);
+        }
+        return null;
     }
 
     public Set<Receipt> getAll(){

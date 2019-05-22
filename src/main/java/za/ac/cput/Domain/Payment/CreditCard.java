@@ -28,6 +28,12 @@ public class CreditCard extends Card {
         public CreditCard build() {
             return new CreditCard(this);
         }
+
+        public Builder copy(CreditCard creditCard) {
+            this.credits = creditCard.credits;
+
+            return this;
+        }
     }
 }
 

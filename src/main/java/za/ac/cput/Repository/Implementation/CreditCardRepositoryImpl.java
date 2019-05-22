@@ -41,7 +41,7 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
 
     public void delete(String cardNo) {
         CreditCard creditCard = hasCreditCard(cardNo);
-        if (cardNo != null) this.creditCards.remove(creditCard);
+        if (creditCard != null) this.creditCards.remove(creditCard);
     }
 
     public CreditCard update(CreditCard creditCard) {

@@ -28,5 +28,10 @@ public class Suite extends Room {
         public Suite build() {
             return new Suite(this);
         }
+        public Builder copy(Suite suite) {
+            this.suite = suite.suite;
+
+            return this;
+        }
     }
 }

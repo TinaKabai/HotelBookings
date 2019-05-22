@@ -24,5 +24,11 @@ public class DebitCard extends Card {
      public DebitCard build() {
          return new DebitCard(this);
      }
+
+     public Builder copy(DebitCard debitCard) {
+         this.deductions = debitCard.deductions;
+
+         return this;
+     }
  }
 }

@@ -34,7 +34,7 @@ public class GuestRepositoryImpl implements  GuestRepository{
 
     public Guest update(Guest guest) {
 
-        Guest toDelete = (Guest) findGuests(guest.getName());
+        Guest toDelete = findGuests(guest.getName());
         if(toDelete != null) {
             this.guests.remove(toDelete);
             return create(guest);

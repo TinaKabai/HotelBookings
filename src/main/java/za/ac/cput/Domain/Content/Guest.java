@@ -52,5 +52,13 @@ public class Guest extends Demographic implements Transaction {
         public Guest build() {
             return new Guest(this);
         }
+
+        public Builder copy(Guest guest) {
+            this.name = guest.name;
+            this.number = guest.number;
+            this.homeAddress = guest.homeAddress;
+
+            return this;
+        }
     }
 }

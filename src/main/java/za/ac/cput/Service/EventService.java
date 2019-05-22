@@ -2,10 +2,9 @@ package za.ac.cput.Service;
 
 import za.ac.cput.Domain.Activites.Event;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface EventService extends IService<Event, String> {
 
-    Set<Event> getAllAppDevCourses();
-    Set<Event> getAll();
+    Map<Event, Event> getAll();
 }

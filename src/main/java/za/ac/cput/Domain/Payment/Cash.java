@@ -41,5 +41,12 @@ public static class Builder{
     public Cash build() {
         return new Cash(this);
     }
+
+    public Builder copy(Cash cash) {
+        this.amount = cash.amount;
+        this.change = cash.change;
+
+        return this;
+    }
 }
 }

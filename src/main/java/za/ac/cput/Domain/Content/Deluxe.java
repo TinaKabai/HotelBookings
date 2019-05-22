@@ -28,5 +28,11 @@ public class Deluxe extends Room {
         public Deluxe build() {
             return new Deluxe(this);
         }
+
+        public Builder copy(Deluxe deluxe) {
+            this.deluxe = deluxe.deluxe;
+
+            return this;
+        }
     }
 }
