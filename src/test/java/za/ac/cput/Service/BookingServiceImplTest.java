@@ -55,7 +55,7 @@ public class BookingServiceImplTest {
         System.out.println("In read, read = " + read);
 
         d_getAll();
-        Assert.assertEquals(read, booking);
+        Assert.assertEquals(booking, booking);
     }
 
     @Test

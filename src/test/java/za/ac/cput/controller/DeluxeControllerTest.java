@@ -4,6 +4,7 @@ package za.ac.cput.controller;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,6 +17,7 @@ import static junit.framework.TestCase.assertNotNull;
 public class DeluxeControllerTest {
 
     @Autowired
+    @Qualifier("DeluxeServiceImpl")
     private TestRestTemplate restTemplate;
     private String baseURL="http://localhost:8080/deluxe";
 

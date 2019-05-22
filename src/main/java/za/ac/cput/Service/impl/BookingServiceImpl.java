@@ -1,14 +1,18 @@
 package za.ac.cput.Service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 import za.ac.cput.Domain.Content.Booking;
 import za.ac.cput.Repository.BookingRepository;
 import za.ac.cput.Repository.Implementation.BookingRepositoryImpl;
 import za.ac.cput.Service.BookingService;
 
 import java.util.Map;
-
+@Service
 public class BookingServiceImpl implements BookingService {
-
+@Autowired
+@Qualifier("BookingServiceImpl")
     private BookingServiceImpl service = null;
     private BookingRepository repository;
 

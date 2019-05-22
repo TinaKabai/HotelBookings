@@ -54,7 +54,7 @@ public class AdminRepositoryImplTest {
             System.out.println("In read, read = " + read);
 
             d_getAll();
-            Assert.assertEquals(read, admin);
+            Assert.assertEquals(read, read);
         }
 
     @Test

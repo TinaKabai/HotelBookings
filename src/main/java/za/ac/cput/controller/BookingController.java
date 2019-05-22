@@ -1,6 +1,7 @@
 package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.Domain.Content.Booking;
 import za.ac.cput.Factory.BookingFactory;
@@ -12,6 +13,7 @@ import java.util.Map;
 @RequestMapping("/HotelBookings/booking")
 public class BookingController {
     @Autowired
+    @Qualifier("BookingServiceImpl")
     private BookingServiceImpl service;
 
     @GetMapping("/create/{booking}")

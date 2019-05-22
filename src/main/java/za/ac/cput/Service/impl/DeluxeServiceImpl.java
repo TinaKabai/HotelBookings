@@ -1,5 +1,7 @@
 package za.ac.cput.Service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import za.ac.cput.Domain.Content.Deluxe;
 import za.ac.cput.Repository.DeluxeRepository;
 import za.ac.cput.Repository.Implementation.DeluxeRepositoryImpl;
@@ -7,8 +9,10 @@ import za.ac.cput.Service.DeluxeService;
 
 import java.util.Map;
 
-public class DeluxeServiceImpl implements DeluxeService {
 
+public class DeluxeServiceImpl implements DeluxeService {
+@Autowired
+@Qualifier("DeluxeServiceImpl")
     private DeluxeServiceImpl service = null;
     private DeluxeRepository repository;
 
