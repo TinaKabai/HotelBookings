@@ -1,6 +1,5 @@
 package za.ac.cput.Repository;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;

@@ -12,7 +12,6 @@ import java.util.Map;
 @Service
 public class BookingServiceImpl implements BookingService {
 @Autowired
-@Qualifier("BookingServiceImpl")
     private BookingServiceImpl service = null;
     private BookingRepository repository;
 
@@ -22,7 +21,7 @@ public class BookingServiceImpl implements BookingService {
 
     public BookingService getService(){
         if (service == null) service = new BookingServiceImpl();
-        return null;
+        return service;
     }
 
     @Override

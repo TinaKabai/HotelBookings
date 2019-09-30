@@ -46,13 +46,11 @@ public class BookingRepositoryImpl implements BookingRepository {
         Booking toDelete = booked(booking.getName());
         if(toDelete != null) {
             this.bookings.remove(toDelete);
-            return create(booking);
         }
-        return null;
+        return create(toDelete);
     }
 
     public Map<Booking, Booking> getAll(){
         return this.bookings;
     }
-
 }

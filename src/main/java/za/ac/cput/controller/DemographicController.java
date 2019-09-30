@@ -1,6 +1,7 @@
 package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.Domain.Content.Demographic;
 import za.ac.cput.Factory.DemographicFactory;
@@ -13,6 +14,7 @@ import java.util.Map;
 public class DemographicController {
 
     @Autowired
+    @Qualifier("DDemographicServiceImpl")
     private DemographicServiceImpl service;
 
     @GetMapping("/create/{race}")
