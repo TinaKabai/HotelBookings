@@ -1,82 +1,76 @@
 package za.ac.cput.Service;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Demographic;
 import za.ac.cput.Factory.DemographicFactory;
-import za.ac.cput.Repository.DemographicRepository;
-import za.ac.cput.Repository.Implementation.DemographicRepositoryImpl;
+import za.ac.cput.Service.Content.implementations.DemographicServiceImpl;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class DemographicServiceImplTest {
 
-    private DemographicRepository repository;
-
-    private Demographic demographic;
+    @Autowired
+    private DemographicServiceImpl service;
+    private List<Demographic> classes;
+    Demographic dl;
+    Demographic d2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (DemographicRepositoryImpl) DemographicRepositoryImpl.getRepository();
-
-        this.demographic = DemographicFactory.identifyDemo("Black", " Sotho ", 16, " Male");
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Demographic, Demographic> demographic = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + demographic);
     }
 
     @Test
     public void create() {
-
-        Demographic created = this.repository.create(this.demographic);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.demographic);
+        dl = DemographicFactory.identifyDemo("Black", " Sotho", 16, " Male");
+        Demographic d = this.service.create(dl);
+        Assert.assertEquals(dl.getGender(), d.getGender());
     }
 
     @Test
     public void read() {
+        String s = "Male";
+        Demographic dl = this.service.read(s);
 
-        Demographic read = this.repository.read(demographic.getRace());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, demographic);
+        Assert.assertEquals(s, dl.getGender());
+        System.out.println(dl.getGender());
     }
 
     @Test
     public void update() {
-
-        String newDemo = "White";
-
-        Demographic updated = new Demographic.Builder().race(newDemo).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newDemo, updated.getRace());
-        d_getAll();
+        dl = DemographicFactory.identifyDemo("Black", " Sotho", 16, " Male");
+        Demographic d = this.service.update(dl);
+        Assert.assertEquals(dl.getGender(), d.getGender());
+        System.out.println(d.getGender());
     }
 
     @Test
     public void delete() {
+        String s = "Male";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(demographic.getRace());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

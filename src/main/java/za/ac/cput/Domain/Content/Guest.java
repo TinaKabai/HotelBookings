@@ -2,7 +2,13 @@ package za.ac.cput.Domain.Content;
 
 import za.ac.cput.Domain.Payment.Transaction;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Guest extends Demographic implements Transaction {
+
+    @Id
     private String name;
     private String number;
     private String homeAddress;

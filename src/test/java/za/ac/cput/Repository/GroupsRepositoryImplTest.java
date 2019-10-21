@@ -1,81 +1,82 @@
 package za.ac.cput.Repository;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Tour.Groups;
 import za.ac.cput.Factory.GroupsFactory;
-import za.ac.cput.Repository.Implementation.GroupsRepositoryImpl;
+import za.ac.cput.Repository.tour.GroupsRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class GroupsRepositoryImplTest {
 
-    private GroupsRepository repository;
-
-    private Groups groups;
+    @Autowired
+    private GroupsRepository classRepository;
+    private List<Groups> classes;
+    Groups gl;
+    Groups g2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (GroupsRepositoryImpl) GroupsRepositoryImpl.getRepository();
-
-        this.groups = GroupsFactory.groups("Travelling", 5, 12);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Groups, Groups> groups = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + groups);
     }
 
     @Test
     public void create() {
-
-        Groups created = this.repository.create(this.groups);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.groups);
+        gl = GroupsFactory.groups("Travelling", 5, 12);
+        g2 = GroupsFactory.groups("Hiking", 10, 5);
+        Groups g = this.classRepository.save(gl);
+        Assert.assertEquals(gl.getGroupName(), g.getGroupName());
+        Groups gg = this.classRepository.save(g2);
+        Assert.assertEquals(g2.getGroupName(), gg.getGroupName());
     }
 
     @Test
     public void read() {
+        String s = "Travelling";
+        Groups g1 = this.classRepository.findById(s).orElse(null);
 
-        Groups read = this.repository.read(groups.getGroupName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, groups);
+        Assert.assertEquals(s, g1.getGroupName());
+        System.out.println(g1.getGroupName() + " " + g1.getMembers());
     }
 
     @Test
-    public void update() {
-
-        String newGroup = "Photographing";
-
-        Groups updated = new Groups.Builder().groupName(newGroup).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newGroup, updated.getGroupName());
-        d_getAll();
+    public void update()
+    {
+        gl = GroupsFactory.groups("Travelling", 5, 12);
+        Groups g = this.classRepository.save(gl);
+        Assert.assertEquals(gl.getGroupName(), g.getGroupName());
+        System.out.println(g.getGroupName() + "\n" + g.getMembers());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "Travelling";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(groups.getGroupName());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

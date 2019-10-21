@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Users;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Admin {
+
+    @Id
     private String ID;
     private String password;
 

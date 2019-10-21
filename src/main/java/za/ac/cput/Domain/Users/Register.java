@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Users;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Register {
+
+    @Id
     private String fisrtName;
     private String lastName;
     private String DOB;

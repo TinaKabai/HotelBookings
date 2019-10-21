@@ -5,78 +5,81 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Tour.Attendance;
 import za.ac.cput.Factory.AttendanceFactory;
-import za.ac.cput.Repository.Implementation.AttendanceRepositoryImpl;
+import za.ac.cput.Repository.tour.AttendanceRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class AttendanceRepositoryImplTest{
 
-    private AttendanceRepository repository;
-
-    private Attendance attendance;
+    @Autowired
+    private AttendanceRepository classRepository;
+    private List<Attendance> classes;
+    Attendance al;
+    Attendance a2;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
 
-        this.repository = (AttendanceRepositoryImpl) AttendanceRepositoryImpl.getRepository();
-
-        this.attendance = AttendanceFactory.attendingGuests(true);
     }
 
     @Test
-    public void d_getAll() {
-        Map<Attendance, Attendance> attendance = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + attendance);
+    public void create()
+    {
+        al = AttendanceFactory.attendingGuests(true);
+        a2 = AttendanceFactory.attendingGuests(false);
+        Attendance a = this.classRepository.save(al);
+        Assert.assertEquals(al.isAttending(), a.isAttending());
+        Attendance aa = this.classRepository.save(a2);
+        Assert.assertEquals(a2.isAttending(), aa.isAttending());
     }
 
     @Test
-    public void create() {
+    public void m_read()
+    {
+        String s = "true";
+        Attendance a1 = this.classRepository.findById(s).orElse(null);
 
-        Attendance created = this.repository.create(this.attendance);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.attendance);
+        Assert.assertEquals(s, al.isAttending());
+        System.out.println(a1.isAttending());
     }
 
     @Test
-    public void read() {
-
-        Attendance read = this.repository.read(attendance.getName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, attendance);
+    public void update()
+    {
+        al = AttendanceFactory.attendingGuests(true);
+        Attendance a = this.classRepository.save(al);
+        Assert.assertEquals(al.isAttending(), a.isAttending());
+        System.out.println(a.isAttending());
     }
 
     @Test
-    public void update() {
-
-        boolean newAttend = false;
-
-        Attendance updated = new Attendance.Builder().attend(newAttend).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newAttend, updated.isAttending());
-        d_getAll();
+    public void delete()
+    {
+        String s = "true";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
     }
 
     @Test
-    public void delete() {
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
 
-        this.repository.delete(attendance.getName());
-        d_getAll();
+        System.out.println(classes.size());
     }
 }

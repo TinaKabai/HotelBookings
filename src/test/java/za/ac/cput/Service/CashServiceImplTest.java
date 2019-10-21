@@ -1,82 +1,76 @@
 package za.ac.cput.Service;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import za.ac.cput.Domain.Payment.Card;
-import za.ac.cput.Factory.CardFactory;
-import za.ac.cput.Repository.CardRepository;
-import za.ac.cput.Repository.Implementation.CardRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import za.ac.cput.Domain.Payment.Cash;
+import za.ac.cput.Factory.CashFactory;
+import za.ac.cput.Service.Payment.implementations.CashServiceImpl;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class CashServiceImplTest {
 
-    private CardRepository repository;
-
-    private Card card;
+    @Autowired
+    private CashServiceImpl service;
+    private List<Cash> classes;
+    Cash cl;
+    Cash c2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (CardRepositoryImpl) CardRepositoryImpl.getRepository();
-
-        this.card = CardFactory.guestCard("6008158300567190 ", 2002);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Card, Card> admin = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + admin);
     }
 
     @Test
     public void create() {
-
-        Card created = this.repository.create(this.card);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.card);
+        cl = CashFactory.cash("500.00", 10.00);
+        Cash c = this.service.create(cl);
+        Assert.assertEquals(cl.getAmount(), c.getAmount());
     }
 
     @Test
     public void read() {
+        String s = "500.00";
+        Cash cl = this.service.read(s);
 
-        Card read = this.repository.read(card.getCardNo());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, card);
+        Assert.assertEquals(s, cl.getAmount());
+        System.out.println(cl.getAmount() + " " + cl.getChange());
     }
 
     @Test
     public void update() {
-
-        String newCard = "6008158300123456";
-
-        Card updated = new Card.Builder().cardNumber(newCard).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newCard, updated.getCardNo());
-        d_getAll();
+        cl = CashFactory.cash("500.00", 10.00);
+        Cash c = this.service.update(cl);
+        Assert.assertEquals(cl.getAmount(), c.getAmount());
+        System.out.println(c.getAmount() + "\n" + c.getChange());
     }
 
     @Test
     public void delete() {
+        String s = "500.00";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(card.getCardNo());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

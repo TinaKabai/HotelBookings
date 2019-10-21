@@ -4,78 +4,78 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.NonAC;
 import za.ac.cput.Factory.NonACFactory;
-import za.ac.cput.Repository.Implementation.NonACRepositoryImpl;
+import za.ac.cput.Repository.content.NonACRepository;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class NonACRepositoryImplTest {
 
-    private NonACRepository repository;
-
-    private NonAC nonAC;
+    @Autowired
+    private NonACRepository classRepository;
+    private List<NonAC> classes;
+    NonAC nl;
+    NonAC n2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (NonACRepositoryImpl) NonACRepositoryImpl.getRepository();
-
-        this.nonAC = NonACFactory.accessibility(true);
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<NonAC> nonAC = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + nonAC);
     }
 
     @Test
     public void create() {
-
-        NonAC created = this.repository.create(this.nonAC);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.nonAC);
+        nl = NonACFactory.accessibility(true);
+        n2 = NonACFactory.accessibility(false);
+        NonAC n = this.classRepository.save(nl);
+        Assert.assertEquals(nl.isNonAC(), n.isNonAC());
+        NonAC nn = this.classRepository.save(n2);
+        Assert.assertEquals(n2.isNonAC(), nn.isNonAC());
     }
 
     @Test
     public void read() {
+        String s = "true";
+        NonAC n1 = this.classRepository.findById(s).orElse(null);
 
-        NonAC read = this.repository.read(nonAC.getRoomType());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, nonAC);
+        Assert.assertEquals(s, n1.isNonAC());
+        System.out.println(n1.isNonAC());
     }
 
     @Test
-    public void update() {
-
-        boolean newNonAC = true;
-
-        NonAC updated = new NonAC.Builder().nonAC(newNonAC).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newNonAC, updated.isNonAC());
-        d_getAll();
+    public void update()
+    {
+        nl = NonACFactory.accessibility(true);
+        NonAC n = this.classRepository.save(nl);
+        Assert.assertEquals(nl.isNonAC(), n.isNonAC());
+        System.out.println(n.isNonAC());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "TinaN";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(nonAC.getRoomType());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

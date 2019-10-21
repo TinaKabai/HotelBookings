@@ -1,71 +1,86 @@
 package za.ac.cput.controller;
 
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Activites.Sport;
 import za.ac.cput.Factory.SportFactory;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class SportControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
-    private String baseURL="http://localhost:8080/sport";
+    private TestRestTemplate restTempl;
+    private String url = "http://localhost:8080/sports";
 
     @Test
-    public void testGetAllSports() {
-        HttpHeaders headers = new HttpHeaders();
-
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseURL + "/read/all",
-                HttpMethod.GET, entity, String.class);
-        assertNotNull(response.getBody());
+    public void create()
+    { Sport sport = SportFactory.findSport("Rugby", "Tina", 30, "Cape Sun Hotel");
+        ResponseEntity<Sport> response = restTempl.postForEntity(url + "/create", sport, Sport.class);
+        Assert.assertNotNull(response);
+        Assert.assertNotNull(response.getBody());
+        System.out.println(response.getBody().getSportName() + " " +response.getBody().getNoParticipants());
     }
 
-    @Ignore
-    public void testGetSportById() {
-        Sport sport = restTemplate.getForObject(baseURL + "/sport/1", Sport.class);
-        System.out.println(sport.getSportName());
-        assertNotNull(sport);
+    @Test
+    public void read()
+    {
+        Sport s  = restTempl.getForObject(url + "/read/true", Sport.class);
+        Assert.assertNotNull(s);
+        System.out.println(s.getSportName() + " " + s.getNoParticipants());
     }
 
-    @Ignore
-    public void testCreateSport() {
-        Sport sport = SportFactory.findSport("Rugby",
-                "Tina", 30, "Cape Sun Hotel");
+    @Test
+    public void update()
+    {
+        String id = "Rugby";
+        Sport sport  = restTempl.getForObject(url + "/read/" + id, Sport.class);
 
-        ResponseEntity<Sport> postResponse = restTemplate.postForEntity(baseURL + "/create", sport, Sport.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
+        restTempl.put(url + "/update/" + id, sport);
+        Sport update = restTempl.getForObject(url + "/read/" + id, Sport.class);
+        Assert.assertNotNull(update);
+        System.out.println(update.getSportName() + " " + update.getNoParticipants());
+
     }
 
-    @Ignore
-    public void testUpdateSport() {
-        int id = 1;
-        Sport sport = restTemplate.getForObject(baseURL + "/sport/" + id, Sport.class);
+    @Test
+    public void delete()
+    {
+        String id = "Rugby";
+        Sport sport  = restTempl.getForObject(url + "/read/" + id, Sport.class);
+        Assert.assertEquals(id, sport.getSportName());
+        System.out.println(sport.getSportName() + " " + sport.getNoParticipants());
+        restTempl.delete(url+ "/delete/" + id);
 
-        restTemplate.put(baseURL + "/sport/" + id, sport);
-        Sport updatedSport = restTemplate.getForObject(baseURL + "/Sport/" + id, Sport.class);
-        assertNotNull(updatedSport);
-    }
+        sport = restTempl.getForObject(url + "/read/"+id, Sport.class);
 
-    @Ignore
-    public void testDeletSport() {
-        int id = 2;
-        Sport sport = restTemplate.getForObject(baseURL + "/sports/" + id, Sport.class);
-        assertNotNull(sport);
-        restTemplate.delete(baseURL + "/sports/" + id);
-        try {
-            sport = restTemplate.getForObject(baseURL + "/sports/" + id, Sport.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+        Assert.assertNotSame(id, sport.getNoParticipants());
+
+        /*try
+        {
         }
+        catch (HttpClientErrorException hcee){
+            Assert.assertEquals(hcee.getStatusCode(), HttpStatus.NOT_FOUND);
+        }*/
+    }
+    @Test
+    public void p_getAll()
+    {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity respoEnt = restTempl.exchange(url + "/getAll", HttpMethod.GET, entity, String.class);
+        Assert.assertNotSame(null, respoEnt.getBody());
     }
 }

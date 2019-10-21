@@ -1,81 +1,83 @@
 package za.ac.cput.Repository;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Deluxe;
 import za.ac.cput.Factory.DeluxeFactory;
-import za.ac.cput.Repository.Implementation.DeluxeRepositoryImpl;
+import za.ac.cput.Repository.content.DeluxeRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class DeluxeRepositoryImplTest {
 
-    private DeluxeRepository repository;
-
-    private Deluxe deluxe;
+    @Autowired
+    private DeluxeRepository classRepository;
+    private List<Deluxe> classes;
+    Deluxe dl;
+    Deluxe d2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (DeluxeRepositoryImpl) DeluxeRepositoryImpl.getRepository();
-
-        this.deluxe = DeluxeFactory.delux(true);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Deluxe, Deluxe> deluxe = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + deluxe);
     }
 
     @Test
     public void create() {
-
-        Deluxe created = this.repository.create(this.deluxe);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.deluxe);
+        dl = DeluxeFactory.delux(true);
+        d2 = DeluxeFactory.delux(false);
+        Deluxe d = this.classRepository.save(dl);
+        Assert.assertEquals(dl.isDeluxe(), d.isDeluxe());
+        Deluxe dd = this.classRepository.save(d2);
+        Assert.assertEquals(d2.isDeluxe(), dd.isDeluxe());
     }
 
     @Test
-    public void read() {
+    public void read()
+    {
+        String s = "true";
+        Deluxe d1 = this.classRepository.findById(s).orElse(null);
 
-        Deluxe read = this.repository.read(deluxe.getRoomType());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, deluxe);
+        Assert.assertEquals(s, d1.isDeluxe());
+        System.out.println(d1.isDeluxe());
     }
 
     @Test
-    public void update() {
-
-        boolean newDeluxe = true;
-
-        Deluxe updated = new Deluxe.Builder().deluxe(newDeluxe).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newDeluxe, updated.isDeluxe());
-        d_getAll();
+    public void update()
+    {
+        dl = DeluxeFactory.delux(true);
+        Deluxe d = this.classRepository.save(dl);
+        Assert.assertEquals(dl.isDeluxe(), d.isDeluxe());
+        System.out.println(d.isDeluxe());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "true";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(deluxe.getRoomType());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

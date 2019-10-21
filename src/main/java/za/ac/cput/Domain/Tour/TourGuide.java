@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Tour;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class TourGuide {
+
+    @Id
     private String name;
     private boolean available;
 

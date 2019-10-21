@@ -10,7 +10,7 @@ public class DemographicFactoryTest {
     @Test
     public void demo(){
 
-        Demographic graphic = DemographicFactory.identifyDemo("Black", " Sotho ", 16, " Male");
+        Demographic graphic = DemographicFactory.identifyDemo("Black", " Sotho", 16, " Male");
 
         Assert.assertEquals("Black", graphic.getRace());
     }

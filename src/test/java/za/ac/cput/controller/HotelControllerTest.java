@@ -1,71 +1,88 @@
 package za.ac.cput.controller;
 
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Hotel;
 import za.ac.cput.Factory.HotelFactory;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class HotelControllerTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
-    private String baseURL="http://localhost:8080/hotel";
+    private TestRestTemplate restTempl;
+    private String url = "http://localhost:8080/hotel";
 
     @Test
-    public void testGetAllHotels() {
-        HttpHeaders headers = new HttpHeaders();
-
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseURL + "/read/all",
-                HttpMethod.GET, entity, String.class);
-        assertNotNull(response.getBody());
-    }
-
-    @Ignore
-    public void testGetHotelById() {
-        Hotel hotel = restTemplate.getForObject(baseURL + "/hotel/1", Hotel.class);
-        System.out.println(hotel.getHotelName());
-        assertNotNull(hotel);
-    }
-
-    @Ignore
-    public void testCreateHotel() {
-        Hotel hotel = HotelFactory.chooseHotel("Cape Town ", 8000, "Cape Sun Hotel", "23 Strand St",
+    public void create()
+    {
+        Hotel hotel = HotelFactory.chooseHotel("Cape Town", 8000, "Cape Sun Hotel", "23 Strand St",
                 "021 488 5100", "https://southern-sun-cape-sun.capetown-hotels-za.com/en/");
-
-        ResponseEntity<Hotel> postResponse = restTemplate.postForEntity(baseURL + "/create", hotel, Hotel.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
+        ResponseEntity<Hotel> response = restTempl.postForEntity(url + "/create", hotel, Hotel.class);
+        Assert.assertNotNull(response);
+        Assert.assertNotNull(response.getBody());
+        System.out.println(response.getBody().getHotelName());
     }
 
-    @Ignore
-    public void testUpdateHotel() {
-        int id = 1;
-        Hotel hotel = restTemplate.getForObject(baseURL + "/hotel/" + id, Hotel.class);
-
-        restTemplate.put(baseURL + "/hotel/" + id, hotel);
-        Hotel updatedHotel = restTemplate.getForObject(baseURL + "/Hotel/" + id, Hotel.class);
-        assertNotNull(updatedHotel);
+    @Test
+    public void read()
+    {
+        Hotel h  = restTempl.getForObject(url + "/read/true", Hotel.class);
+        Assert.assertNotNull(h);
+        System.out.println(h.getHotelName());
     }
 
-    @Ignore
-    public void testDeleteHotel() {
-        int id = 2;
-        Hotel hotel = restTemplate.getForObject(baseURL + "/hotel/" + id, Hotel.class);
-        assertNotNull(hotel);
-        restTemplate.delete(baseURL + "/hotels/" + id);
-        try {
-            hotel = restTemplate.getForObject(baseURL + "/hotels/" + id, Hotel.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+    @Test
+    public void update()
+    {
+        String id = "Cape Sun Hotel";
+        Hotel hotel  = restTempl.getForObject(url + "/read/" + id, Hotel.class);
+
+        restTempl.put(url + "/update/" + id, hotel);
+        Hotel update = restTempl.getForObject(url + "/read/" + id, Hotel.class);
+        Assert.assertNotNull(update);
+        System.out.println(update.getHotelName());
+
+    }
+
+    @Test
+    public void delete()
+    {
+        String id = "Cape Sun Hotel";
+        Hotel hotel  = restTempl.getForObject(url + "/read/" + id, Hotel.class);
+        Assert.assertEquals(id, hotel.getHotelName());
+        System.out.println(hotel.getHotelName());
+        restTempl.delete(url+ "/delete/" + id);
+
+        hotel = restTempl.getForObject(url + "/read/"+id, Hotel.class);
+
+        Assert.assertNotSame(id, hotel.getHotelName());
+
+        /*try
+        {
         }
+        catch (HttpClientErrorException hcee){
+            Assert.assertEquals(hcee.getStatusCode(), HttpStatus.NOT_FOUND);
+        }*/
+    }
+    @Test
+    public void p_getAll()
+    {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity respoEnt = restTempl.exchange(url + "/getAll", HttpMethod.GET, entity, String.class);
+        Assert.assertNotSame(null, respoEnt.getBody());
     }
 }

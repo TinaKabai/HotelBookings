@@ -4,79 +4,72 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Room;
 import za.ac.cput.Factory.RoomFactory;
-import za.ac.cput.Repository.Implementation.RoomRepositoryImpl;
-import za.ac.cput.Repository.RoomRepository;
+import za.ac.cput.Service.Content.implementations.RoomServiceImpl;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class RoomServiceImplTest {
 
-    private RoomRepository repository;
-
-    private Room room;
+    @Autowired
+    private RoomServiceImpl service;
+    private List<Room> classes;
+    Room rl;
+    Room r2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (RoomRepositoryImpl) RoomRepositoryImpl.getRepository();
-
-        this.room = RoomFactory.findRoom(525, " double", "available", 3, 900.00);
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Room> room = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + room);
     }
 
     @Test
     public void create() {
-
-        Room created = this.repository.create(this.room);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.room);
+        rl = RoomFactory.findRoom(525, " double", "available", 5, 900.00);
+        Room r = this.service.create(rl);
+        Assert.assertEquals(rl.getRoomNo(), r.getRoomNo());
     }
 
     @Test
     public void read() {
+        String s = "525";
+        Room rl = this.service.read(s);
 
-        Room read = this.repository.read(room.getRoomType());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, room);
+        Assert.assertEquals(s, rl.getRoomNo());
+        System.out.println(rl.getRoomNo() + " " + rl.getRoomType());
     }
 
     @Test
     public void update() {
-
-        String newRoom = "Single";
-
-        Room updated = new Room.Builder().roomType(newRoom).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newRoom, updated.getRoomType());
-        d_getAll();
+        rl = RoomFactory.findRoom(525, " double", "available", 5, 900.00);
+        Room r = this.service.update(rl);
+        Assert.assertEquals(rl.getRoomNo(), r.getRoomNo());
+        System.out.println(r.getRoomNo() + "\n" + r.getFloor());
     }
 
     @Test
     public void delete() {
+        String s = "525";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(room.getRoomType());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

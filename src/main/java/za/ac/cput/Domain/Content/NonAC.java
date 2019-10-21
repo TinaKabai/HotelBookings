@@ -1,7 +1,12 @@
 package za.ac.cput.Domain.Content;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class NonAC extends Room {
 
+    @Id
     private boolean nonAC;
 
     public NonAC() {

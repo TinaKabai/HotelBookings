@@ -1,7 +1,12 @@
 package za.ac.cput.Domain.Payment;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class DebitCard extends Card {
 
+    @Id
     private double deductions;
 
     public DebitCard() {

@@ -1,83 +1,78 @@
 package za.ac.cput.Service;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Hotel;
 import za.ac.cput.Factory.HotelFactory;
-import za.ac.cput.Repository.HotelRepository;
-import za.ac.cput.Repository.Implementation.HotelRepositoryImpl;
+import za.ac.cput.Service.Content.implementations.HotelServiceImpl;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class HotelServiceImplTest {
 
-    private HotelRepository repository;
-
-    private Hotel hotel;
+    @Autowired
+    private HotelServiceImpl service;
+    private List<Hotel> classes;
+    Hotel hl;
+    Hotel h2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (HotelRepositoryImpl) HotelRepositoryImpl.getRepository();
-
-        this.hotel = HotelFactory.chooseHotel("Cape Town ", 8000, "Cape Sun Hotel", "23 Strand St",
-                "021 488 5100", "https://southern-sun-cape-sun.capetown-hotels-za.com/en/");
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Hotel> hotel = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + hotel);
     }
 
     @Test
     public void create() {
-
-        Hotel created = this.repository.create(this.hotel);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.hotel);
+        hl = HotelFactory.chooseHotel("Cape Town", 8000, "Cape Sun Hotel", "23 Strand St",
+                "021 488 5100", "https://southern-sun-cape-sun.capetown-hotels-za.com/en/");
+        Hotel h = this.service.create(hl);
+        Assert.assertEquals(hl.getHotelName(), h.getHotelName());
     }
 
     @Test
     public void read() {
+        String s = "Cape Sun Hotel";
+        Hotel hl = this.service.read(s);
 
-        Hotel read = this.repository.read(hotel.getHotelName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, hotel);
+        Assert.assertEquals(s, hl.getHotelName());
+        System.out.println(hl.getHotelName() + " " + hl.getPhone());
     }
 
     @Test
     public void update() {
-
-        String newHotel = "Protea Hotel";
-
-        Hotel updated = new Hotel.Builder().hotelName(newHotel).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newHotel, updated.getHotelName());
-        d_getAll();
+        hl = HotelFactory.chooseHotel("Cape Town", 8000, "Cape Sun Hotel", "23 Strand St",
+                "021 488 5100", "https://southern-sun-cape-sun.capetown-hotels-za.com/en/");
+        Hotel h = this.service.update(hl);
+        Assert.assertEquals(hl.getHotelName(), h.getHotelName());
+        System.out.println(h.getHotelName() + "\n" + h.getPhone());
     }
 
     @Test
     public void delete() {
+        String s = "Cape Sun Hotel";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(hotel.getHotelName());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

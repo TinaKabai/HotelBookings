@@ -1,7 +1,12 @@
 package za.ac.cput.Domain.Content;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Deluxe extends Room {
 
+    @Id
     private boolean deluxe;
 
     public Deluxe() {

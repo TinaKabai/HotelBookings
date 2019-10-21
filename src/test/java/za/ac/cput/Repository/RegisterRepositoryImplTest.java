@@ -1,83 +1,84 @@
 package za.ac.cput.Repository;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Users.Register;
 import za.ac.cput.Factory.RegisterFactory;
-import za.ac.cput.Repository.Implementation.RegisterRepositoryImpl;
+import za.ac.cput.Repository.users.RegisterRepository;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class RegisterRepositoryImplTest {
 
-    private RegisterRepository repository;
-
-    private Register register;
+    @Autowired
+    private RegisterRepository classRepository;
+    private List<Register> classes;
+    Register rl;
+    Register r2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (RegisterRepositoryImpl) RegisterRepositoryImpl.getRepository();
-
-        this.register = RegisterFactory.registration("Thato", "Kabai", "17 Feb 2002",
-                "TKL", "TK2002", "TK2002");
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Register> register = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + register);
     }
 
     @Test
     public void create() {
-
-        Register created = this.repository.create(this.register);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.register);
+        rl = RegisterFactory.registration("Thato", "Kabai", "17 Feb 2002", "TKL", "TK2002",
+                                            "TK2002");
+        r2 = RegisterFactory.registration("Nkosinati", "Nkosi", "03 March 998", "NK", "N1998",
+                "N1998");
+        Register r = this.classRepository.save(rl);
+        Assert.assertEquals(rl.getUsername(), r.getUsername());
+        Register rr = this.classRepository.save(r2);
+        Assert.assertEquals(r2.getUsername(), rr.getUsername());
     }
 
     @Test
     public void read() {
+        String s = "TKL";
+        Register r1 = this.classRepository.findById(s).orElse(null);
 
-        Register read = this.repository.read(register.getFisrtName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, register);
+        Assert.assertEquals(s, r1.getUsername());
+        System.out.println(r1.getUsername() + " " + r1.getPassword() + " " + r1.getFisrtName());
     }
 
     @Test
-    public void update() {
-
-        String newReg = "Obz Cafe";
-
-        Register updated = new Register.Builder().firstName(newReg).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newReg, updated.getFisrtName());
-        d_getAll();
+    public void update()
+    {
+        rl = RegisterFactory.registration("Thato", "Kabai", "17 Feb 2002", "TKL", "TK2002",
+                "TK2002");
+        Register r = this.classRepository.save(rl);
+        Assert.assertEquals(rl.getUsername(), r.getUsername());
+        System.out.println(r.getUsername() + "\n" + r.getPassword() + "\n" + r.getFisrtName());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "TKL";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(register.getFisrtName());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

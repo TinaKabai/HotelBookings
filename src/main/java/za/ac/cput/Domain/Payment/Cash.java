@@ -1,7 +1,12 @@
 package za.ac.cput.Domain.Payment;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Cash implements Transaction {
 
+    @Id
     private String amount;
     private double change;
 

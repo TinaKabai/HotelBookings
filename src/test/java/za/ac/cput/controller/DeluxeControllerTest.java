@@ -1,72 +1,90 @@
 package za.ac.cput.controller;
 
 
-import org.junit.Ignore;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Deluxe;
 import za.ac.cput.Factory.DeluxeFactory;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class DeluxeControllerTest {
 
     @Autowired
-    @Qualifier("DeluxeServiceImpl")
-    private TestRestTemplate restTemplate;
-    private String baseURL="http://localhost:8080/deluxe";
+    private TestRestTemplate restTempl;
+    private String url = "http://localhost:8080/deluxe rooms";
 
     @Test
-    public void testGetAllDeluxe() {
-        HttpHeaders headers = new HttpHeaders();
-
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseURL + "/read/all",
-                HttpMethod.GET, entity, String.class);
-        assertNotNull(response.getBody());
-    }
-
-    @Ignore
-    public void testGetDeluxeById() {
-        Deluxe deluxe = restTemplate.getForObject(baseURL + "/booking/1", Deluxe.class);
-        System.out.println(deluxe.getRoomType());
-        assertNotNull(deluxe);
-    }
-
-    @Ignore
-    public void testCreateDeluxe() {
+    public void create()
+    {
         Deluxe deluxe = DeluxeFactory.delux(true);
-
-        ResponseEntity<Deluxe> postResponse = restTemplate.postForEntity(baseURL + "/create", deluxe, Deluxe.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
+        ResponseEntity<Deluxe> response = restTempl.postForEntity(url + "/create", deluxe, Deluxe.class);
+        Assert.assertNotNull(response);
+        Assert.assertNotNull(response.getBody());
+        System.out.println(response.getBody().isDeluxe());
     }
 
-    @Ignore
-    public void testUpdateDeluxe() {
-        int id = 1;
-        Deluxe deluxe = restTemplate.getForObject(baseURL + "/deluxe/" + id, Deluxe.class);
-
-        restTemplate.put(baseURL + "/deluxe/" + id, deluxe);
-        Deluxe updatedDeluxe = restTemplate.getForObject(baseURL + "/Deluxe/" + id, Deluxe.class);
-        assertNotNull(updatedDeluxe);
+    @Test
+    public void read()
+    {
+        Deluxe d  = restTempl.getForObject(url + "/read/true", Deluxe.class);
+        Assert.assertNotNull(d);
+        System.out.println(d.isDeluxe());
     }
 
-    @Ignore
-    public void testDeletDeluxe() {
-        int id = 2;
-        Deluxe deluxe = restTemplate.getForObject(baseURL + "/deluxe/" + id, Deluxe.class);
-        assertNotNull(deluxe);
-        restTemplate.delete(baseURL + "/deluxe/" + id);
-        try {
-            deluxe = restTemplate.getForObject(baseURL + "/deluxe/" + id, Deluxe.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+    @Test
+    public void update()
+    {
+        boolean id = true;
+        Deluxe deluxe  = restTempl.getForObject(url + "/read/" + id, Deluxe.class);
+
+        restTempl.put(url + "/update/" + id, deluxe);
+        Deluxe update = restTempl.getForObject(url + "/read/" + id, Deluxe.class);
+        Assert.assertNotNull(update);
+        System.out.println(update.isDeluxe());
+
+    }
+
+    @Test
+    public void delete()
+    {
+        boolean id = true;
+        Deluxe deluxe  = restTempl.getForObject(url + "/read/" + id, Deluxe.class);
+        Assert.assertEquals(id, deluxe.isDeluxe());
+        System.out.println(deluxe.isDeluxe());
+        restTempl.delete(url+ "/delete/" + id);
+
+        deluxe = restTempl.getForObject(url + "/read/"+id, Deluxe.class);
+
+        Assert.assertNotSame(id, deluxe.isDeluxe());
+
+        /*try
+        {
         }
+        catch (HttpClientErrorException hcee){
+            Assert.assertEquals(hcee.getStatusCode(), HttpStatus.NOT_FOUND);
+        }*/
+    }
+
+    @Test
+    public void p_getAll()
+    {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity respoEnt = restTempl.exchange(url + "/getAll", HttpMethod.GET, entity, String.class);
+        Assert.assertNotSame(null, respoEnt.getBody());
     }
 }

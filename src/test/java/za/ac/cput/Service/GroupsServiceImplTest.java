@@ -1,82 +1,76 @@
 package za.ac.cput.Service;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Tour.Groups;
 import za.ac.cput.Factory.GroupsFactory;
-import za.ac.cput.Repository.GroupsRepository;
-import za.ac.cput.Repository.Implementation.GroupsRepositoryImpl;
+import za.ac.cput.Service.Tour.implementations.GroupsServiceImpl;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class GroupsServiceImplTest {
 
-    private GroupsRepository repository;
-
-    private Groups groups;
+    @Autowired
+    private GroupsServiceImpl service;
+    private List<Groups> classes;
+    Groups gl;
+    Groups g2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (GroupsRepositoryImpl) GroupsRepositoryImpl.getRepository();
-
-        this.groups = GroupsFactory.groups("Travelling", 5, 12);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Groups, Groups> groups = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + groups);
     }
 
     @Test
     public void create() {
-
-        Groups created = this.repository.create(this.groups);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.groups);
+        gl = GroupsFactory.groups("Travelling", 5, 12);
+        Groups g = this.service.create(gl);
+        Assert.assertEquals(gl.getGroupName(), g.getGroupName());
     }
 
     @Test
     public void read() {
+        String s = "Travelling";
+        Groups gl = this.service.read(s);
 
-        Groups read = this.repository.read(groups.getGroupName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, groups);
+        Assert.assertEquals(s, gl.getGroupName());
+        System.out.println(gl.getGroupName() + " " + gl.getMembers());
     }
 
     @Test
     public void update() {
-
-        String newGroup = "Photographing";
-
-        Groups updated = new Groups.Builder().groupName(newGroup).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newGroup, updated.getGroupName());
-        d_getAll();
+        gl = GroupsFactory.groups("Travelling", 5, 12);
+        Groups g = this.service.update(gl);
+        Assert.assertEquals(gl.getGroupName(), g.getGroupName());
+        System.out.println(g.getGroupName() + "\n" + g.getMembers());
     }
 
     @Test
     public void delete() {
+        String s = "Travelling";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(groups.getGroupName());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

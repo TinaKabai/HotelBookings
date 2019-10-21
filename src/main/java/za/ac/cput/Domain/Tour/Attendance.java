@@ -2,8 +2,13 @@ package za.ac.cput.Domain.Tour;
 
 import za.ac.cput.Domain.Content.Guest;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Attendance extends Guest {
 
+    @Id
     private boolean attending;
 
     public Attendance() {

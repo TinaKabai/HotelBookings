@@ -1,82 +1,76 @@
 package za.ac.cput.Service;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Payment.CreditCard;
 import za.ac.cput.Factory.CreditCardFactory;
-import za.ac.cput.Repository.CreditCardRepository;
-import za.ac.cput.Repository.Implementation.CreditCardRepositoryImpl;
+import za.ac.cput.Service.Payment.implementations.CreditCardServiceImpl;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class CreditCardServiceImplTest {
 
-    private CreditCardRepository repository;
-
-    private CreditCard creditCard;
+    @Autowired
+    private CreditCardServiceImpl service;
+    private List<CreditCard> classes;
+    CreditCard ccl;
+    CreditCard cc2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (CreditCardRepositoryImpl) CreditCardRepositoryImpl.getRepository();
-
-        this.creditCard = CreditCardFactory.cdtCard(7.9);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<CreditCard, CreditCard> creditCard = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + creditCard);
     }
 
     @Test
     public void create() {
-
-        CreditCard created = this.repository.create(this.creditCard);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.creditCard);
+        ccl = CreditCardFactory.cdtCard(5000.00);
+        CreditCard cc = this.service.create(ccl);
+        Assert.assertSame(ccl.getCredits(), cc.getCredits());
     }
 
     @Test
     public void read() {
+        String s = "5000.00";
+        CreditCard ccl = this.service.read(s);
 
-        CreditCard read = this.repository.read(creditCard.getCardNo());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, creditCard);
+        Assert.assertEquals(s, ccl.getCredits());
+        System.out.println(ccl.getCredits());
     }
 
     @Test
     public void update() {
-
-        double newCredCard = 5.0;
-
-        CreditCard updated = new CreditCard.Builder().credit(newCredCard).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertSame(newCredCard, updated.getCredits());
-        d_getAll();
+        ccl = CreditCardFactory.cdtCard(5000.00);
+        CreditCard cc = this.service.update(ccl);
+        Assert.assertSame(ccl.getCredits(), cc.getCredits());
+        System.out.println(cc.getCredits());
     }
 
     @Test
     public void delete() {
+        String s = "5000.00";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(creditCard.getCardNo());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

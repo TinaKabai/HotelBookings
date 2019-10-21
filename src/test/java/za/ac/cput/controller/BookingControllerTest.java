@@ -1,72 +1,89 @@
 package za.ac.cput.controller;
 
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Booking;
 import za.ac.cput.Factory.BookingFactory;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class BookingControllerTest {
 
     @Autowired
-    @Qualifier("BookingServiceImpl")
-    private TestRestTemplate restTemplate;
-    private String baseURL="http://localhost:8080/booking";
+    private TestRestTemplate restTempl;
+    private String url = "http://localhost:8080/booking";
 
     @Test
-    public void testGetAllBookings() {
-        HttpHeaders headers = new HttpHeaders();
-
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseURL + "/read/all",
-                HttpMethod.GET, entity, String.class);
-        assertNotNull(response.getBody());
-    }
-
-    @Ignore
-    public void testGetBookingById() {
-        Booking booking = restTemplate.getForObject(baseURL + "/booking/1", Booking.class);
-        System.out.println(booking.getName());
-        assertNotNull(booking);
-    }
-
-    @Ignore
-    public void testCreateBooking() {
+    public void create()
+    {
         Booking booking = BookingFactory.bookings(true);
-
-        ResponseEntity<Booking> postResponse = restTemplate.postForEntity(baseURL + "/create", booking, Booking.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
+        ResponseEntity<Booking> response = restTempl.postForEntity(url + "/create", booking, Booking.class);
+        Assert.assertNotNull(response);
+        Assert.assertNotNull(response.getBody());
+        System.out.println(response.getBody().isPay());
     }
 
-    @Ignore
-    public void testUpdateBooking() {
-        int id = 1;
-        Booking booking = restTemplate.getForObject(baseURL + "/booking/" + id, Booking.class);
-
-        restTemplate.put(baseURL + "/booking/" + id, booking);
-        Booking updatedBooking = restTemplate.getForObject(baseURL + "/Booking/" + id, Booking.class);
-        assertNotNull(updatedBooking);
+    @Test
+    public void read()
+    {
+        Booking b  = restTempl.getForObject(url + "/read/true", Booking.class);
+        Assert.assertNotNull(b);
+        System.out.println(b.isPay());
     }
 
-    @Ignore
-    public void testDeletBooking() {
-        int id = 2;
-        Booking booking = restTemplate.getForObject(baseURL + "/bookings/" + id, Booking.class);
-        assertNotNull(booking);
-        restTemplate.delete(baseURL + "/booking/" + id);
-        try {
-            booking = restTemplate.getForObject(baseURL + "/booking/" + id, Booking.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+    @Test
+    public void update()
+    {
+        boolean id = true;
+        Booking booking  = restTempl.getForObject(url + "/read/" + id, Booking.class);
+
+        restTempl.put(url + "/update/" + id, booking);
+        Booking update = restTempl.getForObject(url + "/read/" + id, Booking.class);
+        Assert.assertNotNull(update);
+        System.out.println(update.isPay());
+
+    }
+
+    @Test
+    public void delete()
+    {
+        boolean id = true;
+        Booking booking  = restTempl.getForObject(url + "/read/" + id, Booking.class);
+        Assert.assertEquals(id, booking.isPay());
+        System.out.println(booking.getName());
+        restTempl.delete(url+ "/delete/" + id);
+
+        booking = restTempl.getForObject(url + "/read/"+id, Booking.class);
+
+        Assert.assertNotSame(id, booking.isPay());
+
+        /*try
+        {
         }
+        catch (HttpClientErrorException hcee){
+            Assert.assertEquals(hcee.getStatusCode(), HttpStatus.NOT_FOUND);
+        }*/
+    }
+
+    @Test
+    public void p_getAll()
+    {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity respoEnt = restTempl.exchange(url + "/getAll", HttpMethod.GET, entity, String.class);
+        Assert.assertNotSame(null, respoEnt.getBody());
     }
 }

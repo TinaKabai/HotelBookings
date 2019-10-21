@@ -2,8 +2,13 @@ package za.ac.cput.Domain.Content;
 
 import za.ac.cput.Domain.Payment.Transaction;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Booking extends  Guest implements Transaction {
 
+    @Id
     private boolean pay;
 
     public Booking() {

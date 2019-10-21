@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Activites;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Sport {
+
+    @Id
     private String sportName;
     private String participant;
     private int noParticipants;

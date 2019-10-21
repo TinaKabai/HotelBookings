@@ -1,81 +1,84 @@
 package za.ac.cput.Repository;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Payment.DebitCard;
 import za.ac.cput.Factory.DebitCardFactory;
-import za.ac.cput.Repository.Implementation.DebitCardRepositoryImpl;
+import za.ac.cput.Repository.payment.DebitCardRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class DebitCardRepositoryImplTest {
 
-    private DebitCardRepository repository;
-
-    private DebitCard debitCard;
+    @Autowired
+    private DebitCardRepository classRepository;
+    private List<DebitCard> classes;
+    DebitCard dcl;
+    DebitCard dc2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (DebitCardRepositoryImpl) DebitCardRepositoryImpl.getRepository();
-
-        this.debitCard = DebitCardFactory.dbtCard(10.5);
     }
 
     @Test
-    public void d_getAll() {
-        Map<DebitCard, DebitCard> debitCard = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + debitCard);
+    public void create()
+    {
+        dcl = DebitCardFactory.dbtCard(2000.00);
+        dc2 = DebitCardFactory.dbtCard(3000.00);
+        DebitCard dc = this.classRepository.save(dcl);
+        Assert.assertSame(dcl.getDeductions(), dc.getDeductions());
+        DebitCard dcd = this.classRepository.save(dc2);
+        Assert.assertSame(dc2.getDeductions(), dcd.getDeductions());
     }
 
     @Test
-    public void create() {
+    public void read()
+    {
+        String s = "2000.00";
+        DebitCard dc1 = this.classRepository.findById(s).orElse(null);
 
-        DebitCard created = this.repository.create(this.debitCard);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.debitCard);
+        Assert.assertEquals(s, dc1.getDeductions());
+        System.out.println(dc1.getDeductions());
     }
 
     @Test
-    public void read() {
-
-        DebitCard read = this.repository.read(debitCard.getCardNo());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, debitCard);
+    public void update()
+    {
+        dcl = DebitCardFactory.dbtCard(2000.00);
+        DebitCard dc = this.classRepository.save(dcl);
+        Assert.assertSame(dcl.getDeductions(), dc.getDeductions());
+        System.out.println(dc.getDeductions());
     }
 
     @Test
-    public void update() {
-
-        double newDebCard = 7.9;
-
-        DebitCard updated = new DebitCard.Builder().deduction(newDebCard).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertSame(newDebCard, updated.getDeductions());
-        d_getAll();
+    public void delete()
+    {
+        String s = "2000.00";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
     }
 
     @Test
-    public void delete() {
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
 
-        this.repository.delete(debitCard.getCardNo());
-        d_getAll();
+        System.out.println(classes.size());
     }
 }

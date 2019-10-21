@@ -4,78 +4,78 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Suite;
 import za.ac.cput.Factory.SuiteFactory;
-import za.ac.cput.Repository.Implementation.SuiteRepositoryImpl;
+import za.ac.cput.Repository.content.SuiteRepository;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class SuiteRepositoryImplTest {
 
-    private SuiteRepository repository;
-
-    private Suite suite;
+    @Autowired
+    private SuiteRepository classRepository;
+    private List<Suite> classes;
+    Suite sl;
+    Suite s2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (SuiteRepositoryImpl) SuiteRepositoryImpl.getRepository();
-
-        this.suite = SuiteFactory.suites(true);
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Suite> suite = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + suite);
     }
 
     @Test
     public void create() {
-
-        Suite created = this.repository.create(this.suite);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.suite);
+        sl = SuiteFactory.suites(true);
+        s2 = SuiteFactory.suites(false);
+        Suite s = this.classRepository.save(sl);
+        Assert.assertEquals(sl.isSuite(), s.isSuite());
+        Suite ss = this.classRepository.save(s2);
+        Assert.assertEquals(s2.isSuite(), ss.isSuite());
     }
 
     @Test
     public void read() {
+        String s = "true";
+        Suite s1 = this.classRepository.findById(s).orElse(null);
 
-        Suite read = this.repository.read(suite.getRoomType());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, suite);
+        Assert.assertEquals(s, s1.isSuite());
+        System.out.println(s1.isSuite());
     }
 
     @Test
-    public void update() {
-
-        boolean newSuite = true;
-
-        Suite updated = new Suite.Builder().suite(newSuite).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newSuite, updated.isSuite());
-        d_getAll();
+    public void update()
+    {
+        sl = SuiteFactory.suites(true);
+        Suite s = this.classRepository.save(sl);
+        Assert.assertEquals(sl.isSuite(), s.isSuite());
+        System.out.println(s.isSuite() + "\n" + s.isSuite());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "true";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(suite.getRoomType());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

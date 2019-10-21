@@ -4,78 +4,78 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Guest;
 import za.ac.cput.Factory.GuestFactory;
-import za.ac.cput.Repository.Implementation.GuestRepositoryImpl;
+import za.ac.cput.Repository.content.GuestRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class GuestRepositoryImplTest {
 
-    private GuestRepository repository;
-
-    private Guest guest;
+    @Autowired
+    private GuestRepository classRepository;
+    private List<Guest> classes;
+    Guest gl;
+    Guest g2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (GuestRepositoryImpl) GuestRepositoryImpl.getRepository();
-
-        this.guest = GuestFactory.findGuest("Sebe", "0731906340", "10 Dorset Street");
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Guest, Guest> guest = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + guest);
     }
 
     @Test
     public void create() {
-
-        Guest created = this.repository.create(this.guest);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.guest);
+        gl = GuestFactory.findGuest("Tina", "0731906340", "10 Dorset Street");
+        g2 = GuestFactory.findGuest("Nkosi", "0731915486", "141 Forest Street");
+        Guest g = this.classRepository.save(gl);
+        Assert.assertEquals(gl.getName(), g.getName());
+        Guest gg = this.classRepository.save(g2);
+        Assert.assertEquals(g2.getName(), gg.getName());
     }
 
     @Test
     public void read() {
+        String s = "Tina";
+        Guest g1 = this.classRepository.findById(s).orElse(null);
 
-        Guest read = this.repository.read(guest.getName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, guest);
+        Assert.assertEquals(s, g1.getName());
+        System.out.println(g1.getName() + " " + g1.getNumber());
     }
 
     @Test
-    public void update() {
-
-        String newGuest = "Tina";
-
-        Guest updated = new Guest.Builder().name(newGuest).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newGuest, updated.getName());
-        d_getAll();
+    public void update()
+    {
+        gl = GuestFactory.findGuest("Tina", "0731906340", "10 Dorset Street");
+        Guest g = this.classRepository.save(gl);
+        Assert.assertEquals(gl.getName(), g.getName());
+        System.out.println(g.getName() + "\n" + g.getNumber());
     }
 
     @Test
-    public void delete() {
+    public void delete()
+    {
+        String s = "Tina";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
+    }
 
-        this.repository.delete(guest.getName());
-        d_getAll();
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
     }
 }

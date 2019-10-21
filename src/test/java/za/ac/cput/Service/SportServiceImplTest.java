@@ -4,80 +4,72 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Activites.Sport;
 import za.ac.cput.Factory.SportFactory;
-import za.ac.cput.Repository.Implementation.SportRepositoryImpl;
-import za.ac.cput.Repository.SportRepository;
+import za.ac.cput.Service.Activities.implementations.SportServiceImpl;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class SportServiceImplTest {
 
-    private SportRepository repository;
-
-    private Sport sport;
+    @Autowired
+    private SportServiceImpl service;
+    private List<Sport> classes;
+    Sport sl;
+    Sport s2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (SportRepositoryImpl) SportRepositoryImpl.getRepository();
-
-        this.sport = SportFactory.findSport("Rugby", "Tina",
-                30, "Cape Sun Hotel");
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Sport> sport = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + sport);
     }
 
     @Test
     public void create() {
-
-        Sport created = this.repository.create(this.sport);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.sport);
+        sl = SportFactory.findSport("Rugby", "Tina", 30, "Cape Sun Hotel");
+        Sport s = this.service.create(sl);
+        Assert.assertEquals(sl.getSportName(), s.getSportName());
     }
 
     @Test
     public void read() {
+        String s = "Rugby";
+        Sport sl = this.service.read(s);
 
-        Sport read = this.repository.read(sport.getSportName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, sport);
+        Assert.assertEquals(s, sl.getSportName());
+        System.out.println(sl.getSportName() + " " + sl.getNoParticipants());
     }
 
     @Test
     public void update() {
-
-        String newSport = "Netball";
-
-        Sport updated = new Sport.Builder().sportName(newSport).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newSport, updated.getSportName());
-        d_getAll();
+        sl = SportFactory.findSport("Rugby", "Tina", 30, "Cape Sun Hotel");
+        Sport s = this.service.update(sl);
+        Assert.assertEquals(sl.getSportName(), s.getSportName());
+        System.out.println(s.getSportName() + "\n" + s.getNoParticipants());
     }
 
     @Test
     public void delete() {
+        String s = "Rugby";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(sport.getSportName());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

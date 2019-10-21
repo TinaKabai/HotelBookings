@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Content;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Restaurant {
+
+    @Id
     private String restuName;
     private int floor;
     private String menu;

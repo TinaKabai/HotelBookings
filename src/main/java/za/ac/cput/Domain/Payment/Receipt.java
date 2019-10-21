@@ -1,7 +1,12 @@
 package za.ac.cput.Domain.Payment;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Receipt extends Card {
 
+    @Id
     private String date;
     private String branchNo;
     private String itemDescription;

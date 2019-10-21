@@ -1,81 +1,86 @@
 package za.ac.cput.Repository;
 
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Activites.Event;
 import za.ac.cput.Factory.EventFactory;
-import za.ac.cput.Repository.Implementation.EventRepositoryImpl;
+import za.ac.cput.Repository.activities.EventRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class EventRepositoryImplTest {
 
-    private EventRepository repository;
-
-    private Event event;
+    @Autowired
+    private EventRepository classRepository;
+    private List<Event> classes;
+    Event el;
+    Event e2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (EventRepositoryImpl) EventRepositoryImpl.getRepository();
-
-        this.event = EventFactory.events("Rugby", "Cape Sun Hotel", "10 May 2019", 100.00);
-    }
-
-    @Test
-    public void d_getAll() {
-        Map<Event, Event> admin = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + admin);
     }
 
     @Test
     public void create() {
-
-        Event created = this.repository.create(this.event);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.event);
+        el = EventFactory.events("Athletics", "All_Suites Peninsula Hotel","10 May 2019",
+                                    150.00);
+        e2 = EventFactory.events("Music Festival", "Cape Suns Hotel","18 September 2019",
+                                    200.00);
+        Event e = this.classRepository.save(el);
+        Assert.assertEquals(el.getEvName(), e.getEvName());
+        Event ee = this.classRepository.save(e2);
+        Assert.assertEquals(e2.getEvName(), ee.getEvName());
     }
 
     @Test
-    public void read() {
+    public void read()
+    {
+        String s = "Athletics";
+        Event e1 = this.classRepository.findById(s).orElse(null);
 
-        Event read = this.repository.read(event.getEvName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, event);
+        Assert.assertEquals(s, e1.getEvName());
+        System.out.println(e1.getEvName());
     }
 
     @Test
-    public void update() {
-
-        String newEvent = "Dancing";
-
-        Event updated = new Event.Builder().event(newEvent).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newEvent, updated.getEvName());
-        d_getAll();
+    public void update()
+    {
+        el = EventFactory.events("Athletics", "All_Suites Peninsula Hotel","10 May 2019",
+                                    150.00);
+        Event e = this.classRepository.save(el);
+        Assert.assertEquals(el.getEvName(), e.getEvName());
+        System.out.println(e.getEvName());
     }
 
     @Test
-    public void delete() {
-
-        this.repository.delete(event.getEvName());
-        d_getAll();
+    public void delete()
+    {
+        String s = "Athletics";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
     }
 
+    @Test
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
+
+        System.out.println(classes.size());
+    }
 }

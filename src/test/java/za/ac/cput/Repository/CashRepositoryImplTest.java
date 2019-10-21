@@ -4,78 +4,80 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Payment.Cash;
 import za.ac.cput.Factory.CashFactory;
-import za.ac.cput.Repository.Implementation.CashRepositoryImpl;
+import za.ac.cput.Repository.payment.CashRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class CashRepositoryImplTest {
 
-    private CashRepository repository;
-
-    private Cash cash;
+    @Autowired
+    private CashRepository classRepository;
+    private List<Cash> classes;
+    Cash cl;
+    Cash c2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (CashRepositoryImpl) CashRepositoryImpl.getRepository();
-
-        this.cash = CashFactory.cash("1000.00", 55.00);
     }
 
     @Test
-    public void d_getAll() {
-        Map<Cash, Cash> admin = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + admin);
+    public void create()
+    {
+        cl = CashFactory.cash("500.00", 10.00);
+        c2 = CashFactory.cash("600.00", 20.00);
+        Cash c = this.classRepository.save(cl);
+        Assert.assertEquals(cl.getAmount(), c.getAmount());
+        Cash cc = this.classRepository.save(c2);
+        Assert.assertEquals(c2.getAmount(), cc.getAmount());
     }
 
     @Test
-    public void create() {
+    public void read()
+    {
+        String s = "500.00";
+        Cash c1 = this.classRepository.findById(s).orElse(null);
 
-        Cash created = this.repository.create(this.cash);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.cash);
+        Assert.assertEquals(s, c1.getAmount());
+        System.out.println(c1.getAmount() + " " + c1.getChange());
     }
 
     @Test
-    public void read() {
-
-        Cash read = this.repository.read(cash.getAmount());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, cash);
+    public void update()
+    {
+        cl = CashFactory.cash("500.00", 10.00);
+        Cash c = this.classRepository.save(cl);
+        Assert.assertEquals(cl.getAmount(), c.getAmount());
+        System.out.println(c.getAmount() + "\n" + c.getChange());
     }
 
     @Test
-    public void update() {
-
-        String newCash = "15000.99";
-
-        Cash updated = new Cash.Builder().amount(newCash).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newCash, updated.getAmount());
-        d_getAll();
+    public void delete()
+    {
+        String s = "500.00";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
     }
 
     @Test
-    public void delete() {
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
 
-        this.repository.delete(cash.getAmount());
-        d_getAll();
+        System.out.println(classes.size());
     }
 }

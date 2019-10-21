@@ -1,73 +1,89 @@
 package za.ac.cput.controller;
 
 
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Activites.Event;
 import za.ac.cput.Factory.EventFactory;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class EventControllerTest {
 
     @Autowired
-    @Qualifier("")
-    private TestRestTemplate restTemplate;
-    private String baseURL="http://localhost:8080/event";
+    private TestRestTemplate restTempl;
+    private String url = "http://localhost:8080/events";
 
     @Test
-    public void testGetAllEvents() {
-        HttpHeaders headers = new HttpHeaders();
-
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(baseURL + "/read/all",
-                HttpMethod.GET, entity, String.class);
-        assertNotNull(response.getBody());
+    public void create()
+    {
+        Event event = EventFactory.events("Athletics", "All_Suites Peninsula Hotel",
+                                            "10 May 2019", 150.00);
+        ResponseEntity<Event> response = restTempl.postForEntity(url + "/create", event, Event.class);
+        Assert.assertNotNull(response);
+        Assert.assertNotNull(response.getBody());
+        System.out.println(response.getBody().getEvName());
     }
 
-    @Ignore
-    public void testGetEventById() {
-        Event event = restTemplate.getForObject(baseURL + "/event/1", Event.class);
+    @Test
+    public void read()
+    {
+        Event e  = restTempl.getForObject(url + "/read/true", Event.class);
+        Assert.assertNotNull(e);
+        System.out.println(e.getEvName());
+    }
+
+    @Test
+    public void update()
+    {
+        String id = "Athletics";
+        Event event  = restTempl.getForObject(url + "/read/" + id, Event.class);
+
+        restTempl.put(url + "/update/" + id, event);
+        Event update = restTempl.getForObject(url + "/read/" + id, Event.class);
+        Assert.assertNotNull(update);
+        System.out.println(update.getEvName());
+
+    }
+
+    @Test
+    public void delete()
+    {
+        String id = "Athletics";
+        Event event  = restTempl.getForObject(url + "/read/" + id, Event.class);
+        Assert.assertEquals(id, event.getEvName());
         System.out.println(event.getEvName());
-        assertNotNull(event);
-    }
+        restTempl.delete(url+ "/delete/" + id);
 
-    @Ignore
-    public void testCreateEvent() {
-        Event event = EventFactory.events("Rugby", "Cape Sun Hotel", "10 May 2019", 100.00);
+        event = restTempl.getForObject(url + "/read/"+id, Event.class);
 
-        ResponseEntity<Event> postResponse = restTemplate.postForEntity(baseURL + "/create", event, Event.class);
-        assertNotNull(postResponse);
-        assertNotNull(postResponse.getBody());
-    }
+        Assert.assertNotSame(id, event.getEvName());
 
-    @Ignore
-    public void testUpdateEvent() {
-        int id = 1;
-        Event event = restTemplate.getForObject(baseURL + "/event/" + id, Event.class);
-
-        restTemplate.put(baseURL + "/events/" + id, event);
-        Event updatedEvent = restTemplate.getForObject(baseURL + "/Event/" + id, Event.class);
-        assertNotNull(updatedEvent);
-    }
-
-    @Ignore
-    public void testDeleteEvent() {
-        int id = 2;
-        Event event = restTemplate.getForObject(baseURL + "/events/" + id, Event.class);
-        assertNotNull(event);
-        restTemplate.delete(baseURL + "/events/" + id);
-        try {
-            event = restTemplate.getForObject(baseURL + "/events/" + id, Event.class);
-        } catch (final HttpClientErrorException e) {
-            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+        /*try
+        {
         }
+        catch (HttpClientErrorException hcee){
+            Assert.assertEquals(hcee.getStatusCode(), HttpStatus.NOT_FOUND);
+        }*/
     }
 
+    @Test
+    public void p_getAll()
+    {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
+        ResponseEntity respoEnt = restTempl.exchange(url + "/getAll", HttpMethod.GET, entity, String.class);
+        Assert.assertNotSame(null, respoEnt.getBody());
+    }
 }

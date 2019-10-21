@@ -4,78 +4,81 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Booking;
 import za.ac.cput.Factory.BookingFactory;
-import za.ac.cput.Repository.Implementation.BookingRepositoryImpl;
+import za.ac.cput.Repository.content.BookingRepository;
 
-import java.util.Map;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class BookingRepositoryImplTest {
 
-    private BookingRepository repository;
-
-    private Booking booking;
+    @Autowired
+    private BookingRepository classRepository;
+    private List<Booking> classes;
+    Booking bl;
+    Booking b2;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
 
-        this.repository = (BookingRepositoryImpl) BookingRepositoryImpl.getRepository();
-
-        this.booking = BookingFactory.bookings(true);
     }
 
     @Test
-    public void d_getAll() {
-        Map<Booking, Booking> admin = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + admin);
+    public void create()
+    {
+        bl = BookingFactory.bookings(true);
+        b2 = BookingFactory.bookings(false);
+        Booking b = this.classRepository.save(bl);
+        Assert.assertEquals(bl.isPay(), b.isPay());
+        Booking bb = this.classRepository.save(b2);
+        Assert.assertEquals(b2.isPay(), bb.isPay());
     }
 
     @Test
-    public void create() {
+    public void read()
+    {
+        String s = "true";
+        Booking b1 = this.classRepository.findById(s).orElse(null);
 
-        Booking created = this.repository.create(this.booking);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.booking);
+        Assert.assertEquals(s, b1.isPay());
+        System.out.println(b1.isPay());
     }
 
     @Test
-    public void read() {
-
-        Booking read = this.repository.read(booking.getName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, booking);
+    public void update()
+    {
+        bl = BookingFactory.bookings(true);
+        Booking b = this.classRepository.save(bl);
+        Assert.assertEquals(bl.isPay(), b.isPay());
+        System.out.println(b.isPay());
     }
 
     @Test
-    public void update() {
-
-        boolean newABooking = true;
-
-        Booking updated = new Booking.Builder().pay(newABooking).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newABooking, updated.isPay());
-        d_getAll();
+    public void delete()
+    {
+        String s = "true";
+        this.classRepository.deleteById(s);
+        classes = this.classRepository.findAll();
+        int size = classes.size();
+        Assert.assertEquals(1, size);
     }
 
     @Test
-    public void delete() {
+    public void p_getAll()
+    {
+        classes = this.classRepository.findAll();
+        Assert.assertEquals(1, classes.size());
 
-        this.repository.delete(booking.getName());
-        d_getAll();
+        System.out.println(classes.size());
     }
 }

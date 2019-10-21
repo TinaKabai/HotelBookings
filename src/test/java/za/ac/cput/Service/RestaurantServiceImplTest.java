@@ -4,79 +4,72 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Content.Restaurant;
 import za.ac.cput.Factory.RestaurantFactory;
-import za.ac.cput.Repository.Implementation.RestaurantRepositoryImpl;
-import za.ac.cput.Repository.RestaurantRepository;
+import za.ac.cput.Service.Content.implementations.RestaurantServiceImpl;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class RestaurantServiceImplTest {
 
-    private RestaurantRepository repository;
-
-    private Restaurant restaurant;
+    @Autowired
+    private RestaurantServiceImpl service;
+    private List<Restaurant> classes;
+    Restaurant rl;
+    Restaurant r2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (RestaurantRepositoryImpl) RestaurantRepositoryImpl.getRepository();
-
-        this.restaurant = RestaurantFactory.findRestaurant("Riempies Restaurant", 8, "Main");
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Restaurant> restaurant = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + restaurant);
     }
 
     @Test
     public void create() {
-
-        Restaurant created = this.repository.create(this.restaurant);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.restaurant);
+        rl = RestaurantFactory.findRestaurant("Riempies Restaurant", 8, "Main");
+        Restaurant r = this.service.create(rl);
+        Assert.assertEquals(rl.getRestuName(), r.getRestuName());
     }
 
     @Test
     public void read() {
+        String s = "Riempies Restaurant";
+        Restaurant rl = this.service.read(s);
 
-        Restaurant read = this.repository.read(restaurant.getRestuName());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, restaurant);
+        Assert.assertEquals(s, rl.getRestuName());
+        System.out.println(rl.getRestuName() + " " + rl.getRestuName());
     }
 
     @Test
     public void update() {
-
-        String newRest = "Obz Cafe";
-
-        Restaurant updated = new Restaurant.Builder().restuname(newRest).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newRest, updated.getRestuName());
-        d_getAll();
+        rl = RestaurantFactory.findRestaurant("Riempies Restaurant", 8, "Main");
+        Restaurant r = this.service.update(rl);
+        Assert.assertEquals(rl.getRestuName(), r.getRestuName());
+        System.out.println(r.getRestuName() + "\n" + r.getFloor());
     }
 
     @Test
     public void delete() {
+        String s = "Riempies Restaurant";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(restaurant.getRestuName());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }

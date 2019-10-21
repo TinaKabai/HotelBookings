@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Content;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Room {
+
+    @Id
     private int roomNo;
     private String roomType;
     private String roomStatus;

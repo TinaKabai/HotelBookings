@@ -2,7 +2,13 @@ package za.ac.cput.Domain.Activites;
 
 import za.ac.cput.Domain.Payment.Transaction;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Event implements Transaction {
+
+ @Id
     private String evName;
     private String hotelName;
     private String date;

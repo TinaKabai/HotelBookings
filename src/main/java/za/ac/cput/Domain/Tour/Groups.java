@@ -1,6 +1,12 @@
 package za.ac.cput.Domain.Tour;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Groups {
+
+    @Id
     private String groupName;
     private int noOfGroups;
     private int members;

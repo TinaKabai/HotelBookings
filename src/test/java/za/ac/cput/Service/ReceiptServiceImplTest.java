@@ -4,80 +4,74 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import za.ac.cput.Domain.Payment.Receipt;
 import za.ac.cput.Factory.ReceiptFactory;
-import za.ac.cput.Repository.Implementation.ReceiptRepositoryImpl;
-import za.ac.cput.Repository.ReceiptRepository;
+import za.ac.cput.Service.Payment.implementations.ReceiptServiceImpl;
 
-import java.util.Set;
+import java.util.List;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class ReceiptServiceImplTest {
 
-    private ReceiptRepository repository;
-
-    private Receipt receipt;
+    @Autowired
+    private ReceiptServiceImpl service;
+    private List<Receipt> classes;
+    Receipt rl;
+    Receipt r2;
 
     @Before
     public void setUp() throws Exception {
 
-        this.repository = (ReceiptRepositoryImpl) ReceiptRepositoryImpl.getRepository();
-
-        this.receipt = ReceiptFactory.receipt("10 May 2019", "78557888",
-                "78855", "79559456", "7410");
-    }
-
-    @Test
-    public void d_getAll() {
-        Set<Receipt> receipt = this.repository.getAll();
-
-        System.out.println("In getAll, all = " + receipt);
     }
 
     @Test
     public void create() {
-
-        Receipt created = this.repository.create(this.receipt);
-
-        System.out.println("In create, created = " + created);
-
-        Assert.assertNotNull(created);
-
-        Assert.assertSame(created, this.receipt);
+        rl = ReceiptFactory.receipt("10 May 2019", "78557888", "78855", "79559456",
+                "7410");
+        Receipt r = this.service.create(rl);
+        Assert.assertEquals(rl.getPaymentRef(), r.getPaymentRef());
     }
 
     @Test
     public void read() {
+        String s = "79559456";
+        Receipt rl = this.service.read(s);
 
-        Receipt read = this.repository.read(receipt.getItemDescription());
-
-        System.out.println("In read, read = " + read);
-
-        d_getAll();
-        Assert.assertEquals(read, receipt);
+        Assert.assertEquals(s, rl.getPaymentRef());
+        System.out.println(rl.getPaymentRef() + " " + rl.getItemDescription());
     }
 
     @Test
     public void update() {
-
-        String newReceipt = "77565";
-
-        Receipt updated = new Receipt.Builder().descrption(newReceipt).build();
-
-        System.out.println("In update, about_to_updated = " + updated);
-
-        this.repository.update(updated);
-
-        Assert.assertEquals(newReceipt, updated.getItemDescription());
-        d_getAll();
+        rl = ReceiptFactory.receipt("10 May 2019", "78557888", "78855", "79559456",
+                "7410");
+        Receipt r = this.service.update(rl);
+        Assert.assertEquals(rl.getPaymentRef(), r.getPaymentRef());
+        System.out.println(r.getPaymentRef() + "\n" + r.getItemDescription());
     }
 
     @Test
     public void delete() {
+        String s = "79559456";
+        this.service.delete(s);
+        classes = this.service.getAll();
+        int size = classes.size();
+        System.out.println(size);
+        Assert.assertEquals(classes.size(), size);
+    }
 
-        this.repository.delete(receipt.getItemDescription());
-        d_getAll();
+    @Test
+    public void getAll() {
+        classes = this.service.getAll();
+        System.out.println(classes.size());
+        Assert.assertEquals(1, classes.size());
     }
 }
